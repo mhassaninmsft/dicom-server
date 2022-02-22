@@ -6,8 +6,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using FellowOakDicom;
 using EnsureThat;
+using FellowOakDicom;
 using Microsoft.Extensions.Logging;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem

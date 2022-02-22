@@ -4,11 +4,11 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
-using FellowOakDicom;
 using EnsureThat;
+using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.Routing;
-using Microsoft.Health.Dicom.Core.Messages.Workitem;
 using Microsoft.Health.Dicom.Core.Features.Store;
+using Microsoft.Health.Dicom.Core.Messages.Workitem;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem
 {

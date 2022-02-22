@@ -6,12 +6,12 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using FellowOakDicom;
 using EnsureThat;
+using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
+using Microsoft.Health.Dicom.Core.Features.Query.Model;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.SqlServer.Features.Schema;
-using Microsoft.Health.Dicom.Core.Features.Query.Model;
 
 namespace Microsoft.Health.Dicom.SqlServer.Features.Workitem
 {
