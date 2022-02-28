@@ -87,7 +87,8 @@ namespace Microsoft.Health.Dicom.Api.Controllers
         {
             long fileSize = Request.ContentLength ?? 0;
             _logger.LogInformation("DICOM Web Store Transaction request received, with study instance UID {StudyInstanceUid} and file size of {FileSize} bytes", studyInstanceUid, fileSize);
-
+            var type = _mediator.GetType();
+            _logger.LogInformation("Type is {Type}", type);
             StoreResponse storeResponse = await _mediator.StoreDicomResourcesAsync(
                 Request.Body,
                 Request.ContentType,

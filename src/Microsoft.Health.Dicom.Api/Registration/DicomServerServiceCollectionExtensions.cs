@@ -190,17 +190,20 @@ namespace Microsoft.AspNetCore.Builder
 
                     app.UseSwagger(c =>
                     {
-                        c.RouteTemplate = "{documentName}/api.{json|yaml}";
+                        //c.RouteTemplate = "{documentName}/api.{json|yaml}";
                     });
 
-                    //Disabling swagger ui until accesability team gets back to us
-                    //app.UseSwaggerUI(options =>
-                    //{
-                    //    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
-                    //    {
-                    //        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.yaml", description.GroupName.ToUpperInvariant());
-                    //    }
-                    //});
+                    //Disabling swagger ui until accessibility team gets back to us
+                    app.UseSwaggerUI(options =>
+                    {
+
+                        foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+                        {
+                            var endpoint = $"/swagger/{description.GroupName}/swagger.yaml";
+                            Console.WriteLine($"endpoint is ${endpoint}");
+                            options.SwaggerEndpoint(endpoint, description.GroupName.ToUpperInvariant());
+                        }
+                    });
 
                     next(app);
                 };

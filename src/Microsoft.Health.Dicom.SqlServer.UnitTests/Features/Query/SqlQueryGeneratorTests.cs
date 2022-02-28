@@ -41,7 +41,7 @@ namespace Microsoft.Health.Dicom.SqlServer.UnitTests.Features.Query
             var parm = new SqlQueryParameterManager(CreateSqlParameterCollection());
             new SqlQueryGenerator(stringBuilder, query, parm, SqlServer.Features.Schema.SchemaVersion.V6, DefaultPartition.Key);
 
-            string expectedDistinctSelect = @"SELECT 
+            string expectedDistinctSelect = @"SELECT
 st.StudyKey
 FROM dbo.Study st
 WHERE 1 = 1
@@ -67,7 +67,7 @@ AND st.PartitionKey = 1";
             var parm = new SqlQueryParameterManager(CreateSqlParameterCollection());
             new SqlQueryGenerator(stringBuilder, query, parm, SqlServer.Features.Schema.SchemaVersion.V4, DefaultPartition.Key);
 
-            string expectedDistinctSelect = @"SELECT 
+            string expectedDistinctSelect = @"SELECT
 st.StudyKey
 FROM dbo.Study st
 WHERE 1 = 1";
@@ -76,7 +76,7 @@ WHERE 1 = 1";
 FROM dbo.Instance a
 WHERE 1 = 1
 AND a.StudyKey = f.StudyKey
-AND a.Status = 1 
+AND a.Status = 1
 ORDER BY a.Watermark DESC";
 
             string expectedFilterAndPage = @"
@@ -107,7 +107,7 @@ FETCH NEXT 100 ROWS ONLY";
             var parm = new SqlQueryParameterManager(CreateSqlParameterCollection());
             new SqlQueryGenerator(stringBuilder, query, parm, SqlServer.Features.Schema.SchemaVersion.V4, DefaultPartition.Key);
 
-            string expectedDistinctSelect = @"SELECT 
+            string expectedDistinctSelect = @"SELECT
 st.StudyKey
 ,se.SeriesKey
 FROM dbo.Study st
@@ -125,7 +125,7 @@ FROM dbo.Instance a
 WHERE 1 = 1
 AND a.StudyKey = f.StudyKey
 AND a.SeriesKey = f.SeriesKey
-AND a.Status = 1 
+AND a.Status = 1
 ORDER BY a.Watermark DESC";
 
 
@@ -149,7 +149,7 @@ ORDER BY a.Watermark DESC";
             var parm = new SqlQueryParameterManager(CreateSqlParameterCollection());
             new SqlQueryGenerator(stringBuilder, query, parm, SqlServer.Features.Schema.SchemaVersion.V4, DefaultPartition.Key);
 
-            string expectedDistinctSelect = @"SELECT 
+            string expectedDistinctSelect = @"SELECT
 i.StudyInstanceUid
 ,i.SeriesInstanceUid
 ,i.SopInstanceUid
