@@ -34,7 +34,7 @@ namespace Microsoft.Health.Dicom.SqlServer.Features.Store
         }
 
         public override SchemaVersion Version => SchemaVersion.V10;
-
+        // Index Created here
         public override async Task<long> BeginCreateInstanceIndexAsync(int partitionKey, DicomDataset instance, IEnumerable<QueryTag> queryTags, CancellationToken cancellationToken)
         {
             EnsureArg.IsNotNull(instance, nameof(instance));

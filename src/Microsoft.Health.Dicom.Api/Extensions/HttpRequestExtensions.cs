@@ -3,6 +3,7 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+//using System;
 using System.Collections.Generic;
 using System.Linq;
 using EnsureThat;
@@ -17,8 +18,11 @@ namespace Microsoft.Health.Dicom.Api.Extensions
         public static IEnumerable<AcceptHeader> GetAcceptHeaders(this HttpRequest httpRequest)
         {
             EnsureArg.IsNotNull(httpRequest, nameof(httpRequest));
-            IList<MediaTypeHeaderValue> acceptHeaders = httpRequest.GetTypedHeaders().Accept;
-
+            var headers = httpRequest.GetTypedHeaders();
+            IList<MediaTypeHeaderValue> acceptHeaders = headers.Accept;
+            //IList<MediaTypeHeaderValue> acceptHeaders = httpRequest.GetTypedHeaders().Accept;
+            var res1 = httpRequest.Headers.GetCommaSeparatedValues(HeaderNames.Accept);
+            //Console.WriteLine($"")
             if (acceptHeaders != null && acceptHeaders.Count != 0)
             {
                 return acceptHeaders.Select((item) => item.ToAcceptHeader())

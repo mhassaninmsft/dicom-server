@@ -11,6 +11,8 @@ using Microsoft.Health.Dicom.Blob.Features.Storage;
 using Microsoft.Health.Dicom.Blob.Utilities;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Registration;
+//using Microsoft.Health.Dicom.CosmosDb;
+using Microsoft.Health.Dicom.CosmosDb.Config;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -31,11 +33,21 @@ namespace Microsoft.Extensions.DependencyInjection
             EnsureArg.IsNotNull(functionsBuilder, nameof(functionsBuilder));
             EnsureArg.IsNotNull(configuration, nameof(configuration));
 
+            functionsBuilder.Services.AddOptions<CosmosDbConfig>()
+           .Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
+           {
+               binderOptions.ErrorOnUnknownConfiguration = true;
+           });
+            //.ValidateDataAnnotations()
+            //.ValidateOnStart();
+
             var blobConfig = configuration.GetSection(BlobServiceClientOptions.DefaultSectionName);
             functionsBuilder.Services
                 .AddSingleton<MetadataStoreConfigurationSection>()
                 .AddTransient<IStoreConfigurationSection>(sp => sp.GetRequiredService<MetadataStoreConfigurationSection>())
                 .AddPersistence<IMetadataStore, BlobMetadataStore, LoggingMetadataStore>()
+                //.AddPersistence<IMetadataStore, CosmosDataStore, LoggingMetadataStore>()
+
                 .AddBlobServiceClient(blobConfig)
                 .Configure<BlobContainerConfiguration>(Constants.MetadataContainerConfigurationName, c => c.ContainerName = containerName);
 
