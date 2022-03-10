@@ -7,10 +7,11 @@ using EnsureThat;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Health.Blob.Configs;
 using Microsoft.Health.Dicom.Blob;
-using Microsoft.Health.Dicom.Blob.Features.Storage;
+//using Microsoft.Health.Dicom.Blob.Features.Storage;
 using Microsoft.Health.Dicom.Blob.Utilities;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Registration;
+using Microsoft.Health.Dicom.CosmosDb;
 //using Microsoft.Health.Dicom.CosmosDb;
 using Microsoft.Health.Dicom.CosmosDb.Config;
 
@@ -45,8 +46,8 @@ namespace Microsoft.Extensions.DependencyInjection
             functionsBuilder.Services
                 .AddSingleton<MetadataStoreConfigurationSection>()
                 .AddTransient<IStoreConfigurationSection>(sp => sp.GetRequiredService<MetadataStoreConfigurationSection>())
-                .AddPersistence<IMetadataStore, BlobMetadataStore, LoggingMetadataStore>()
-                //.AddPersistence<IMetadataStore, CosmosDataStore, LoggingMetadataStore>()
+                //.AddPersistence<IMetadataStore, BlobMetadataStore, LoggingMetadataStore>()
+                .AddPersistence<IMetadataStore, CosmosDataStore, LoggingMetadataStore>()
 
                 .AddBlobServiceClient(blobConfig)
                 .Configure<BlobContainerConfiguration>(Constants.MetadataContainerConfigurationName, c => c.ContainerName = containerName);
