@@ -41,6 +41,8 @@ namespace Microsoft.Health.Dicom.Web
                 .AddHostedServices();
 
             AddApplicationInsightsTelemetry(services);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +51,7 @@ namespace Microsoft.Health.Dicom.Web
             app.UseDicomServer();
 
             app.UseDevelopmentIdentityProviderIfConfigured();
+
         }
 
         /// <summary>
@@ -64,5 +67,6 @@ namespace Microsoft.Health.Dicom.Web
                 services.AddLogging(loggingBuilder => loggingBuilder.AddApplicationInsights(instrumentationKey));
             }
         }
+
     }
 }
