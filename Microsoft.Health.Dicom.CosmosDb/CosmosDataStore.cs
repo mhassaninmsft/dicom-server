@@ -18,10 +18,14 @@ using Microsoft.Health.Dicom.Core.Extensions;
 using System.Text.Json;
 using Newtonsoft.Json;
 using Microsoft.IO;
+using Microsoft.Health.Dicom.Core.Features.Query;
+using Microsoft.Health.Dicom.Core.Features.Query.Model;
+using Microsoft.Health.Dicom.Core.Features.Retrieve;
+using Microsoft.Health.Dicom.Core.Messages.Retrieve;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {
-    public class CosmosDataStore : IIndexDataStore, IDisposable, IMetadataStore, IFileStore
+    public class CosmosDataStore : IIndexDataStore, IDisposable, IMetadataStore, IFileStore, IQueryStore, IRetrieveMetadataService
     {
         private readonly ILogger<CosmosDataStore> _logger;
         private readonly CosmosDbConfig _config;
@@ -131,7 +135,8 @@ namespace Microsoft.Health.Dicom.CosmosDb
             var example = System.Text.Json.JsonSerializer.Serialize(dicomDatasetWithoutBulkData, _jsonSerilzierSettings);
 
             dynamic? data_json = JsonConvert.DeserializeObject<dynamic>(example);
-            var data = new DataField() { Id = Guid.NewGuid().ToString(), Value = data_json ?? "None" };
+            var versionString = dicomDatasetWithoutBulkData.ToVersionedInstanceIdentifier(version).SopInstanceUid;
+            var data = new DataField() { Id = versionString, Value = data_json ?? "None" };
             _logger.LogInformation("Trying to upload {Object} to Cosmos", data);
             var res = await Container.CreateItemAsync(data, cancellationToken: cancellationToken);
             _logger.LogInformation("Done with uploading to Cosmos");
@@ -157,6 +162,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public Task<DicomDataset> GetInstanceMetadataAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
         {
+            //versionedInstanceIdentifier.SeriesInstanceUid
             throw new NotImplementedException();
         }
 
@@ -181,9 +187,31 @@ namespace Microsoft.Health.Dicom.CosmosDb
             throw new NotImplementedException();
         }
 
+        public Task<QueryResult> QueryAsync(int partitionKey, QueryExpression query, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetrieveMetadataResponse> RetrieveStudyInstanceMetadataAsync(string studyInstanceUid, string ifNoneMatch = null!, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetrieveMetadataResponse> RetrieveSeriesInstanceMetadataAsync(string studyInstanceUid, string seriesInstanceUid, string ifNoneMatch = null!, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RetrieveMetadataResponse> RetrieveSopInstanceMetadataAsync(string studyInstanceUid, string seriesInstanceUid, string sopInstanceUid, string ifNoneMatch = null!, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         internal class DataField
         {
             public string? Id { get; init; }
+            //[flatten()]
+            //TODO: change it to PayLoad
             public dynamic? Value { get; init; }
         }
     }

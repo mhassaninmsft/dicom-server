@@ -13,7 +13,8 @@ namespace Microsoft.Health.Dicom.Core.Messages.Retrieve
         public AcceptHeader(StringSegment mediaType, PayloadTypes payloadType, StringSegment transferSyntax = default, double? quality = null)
         {
             MediaType = mediaType;
-            PayloadType = PayloadTypes.MultipartRelated;
+            //PayloadType = PayloadTypes.MultipartRelated;
+            PayloadType = payloadType;
             TransferSyntax = transferSyntax;
             Quality = quality;
         }
