@@ -13,9 +13,8 @@ using Microsoft.Health.Dicom.Blob.Utilities;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.Core.Registration;
-using Microsoft.Health.Dicom.CosmosDb;
 //using Microsoft.Health.Dicom.CosmosDb;
-using Microsoft.Health.Dicom.CosmosDb.Config;
+//using Microsoft.Health.Dicom.CosmosDb.Config;
 using Microsoft.Health.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -33,11 +32,11 @@ namespace Microsoft.Extensions.DependencyInjection
             EnsureArg.IsNotNull(serverBuilder, nameof(serverBuilder));
             EnsureArg.IsNotNull(configuration, nameof(configuration));
 
-            serverBuilder.Services.AddOptions<CosmosDbConfig>()
-          .Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
-          {
-              binderOptions.ErrorOnUnknownConfiguration = true;
-          });
+            //  serverBuilder.Services.AddOptions<CosmosDbConfig>()
+            //.Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
+            //{
+            //    binderOptions.ErrorOnUnknownConfiguration = true;
+            //});
 
             var blobConfig = configuration.GetSection(BlobServiceClientOptions.DefaultSectionName);
             serverBuilder.Services
@@ -47,9 +46,9 @@ namespace Microsoft.Extensions.DependencyInjection
             serverBuilder
                 .AddStorageDataStore<BlobStoreConfigurationSection, IFileStore, BlobFileStore, LoggingFileStore>(
                     configuration, "DcmHealthCheck")
-                    .AddStorageDataStore<MetadataStoreConfigurationSection, IMetadataStore, CosmosDataStore, LoggingMetadataStore>(
-                    //.AddStorageDataStore<MetadataStoreConfigurationSection, IMetadataStore, BlobMetadataStore, LoggingMetadataStore>(
-                    configuration, "MetadataHealthCheck")
+                //.AddStorageDataStore<MetadataStoreConfigurationSection, IMetadataStore, CosmosDataStore, LoggingMetadataStore>(
+                //.AddStorageDataStore<MetadataStoreConfigurationSection, IMetadataStore, BlobMetadataStore, LoggingMetadataStore>(
+                //configuration, "MetadataHealthCheck")
                 .AddStorageDataStore<WorkitemStoreConfigurationSection, IWorkitemStore, BlobWorkitemStore, LoggingWorkitemStore>(
                     configuration, "WorkitemHealthCheck");
 

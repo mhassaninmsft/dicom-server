@@ -10,19 +10,20 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Health.Dicom.Core.Features.ChangeFeed;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Partition;
-using Microsoft.Health.Dicom.Core.Features.Query;
-using Microsoft.Health.Dicom.Core.Features.Retrieve;
-using Microsoft.Health.Dicom.Core.Features.Store;
+//using Microsoft.Health.Dicom.Core.Features.Query;
+//using Microsoft.Health.Dicom.Core.Features.Retrieve;
+//using Microsoft.Health.Dicom.Core.Features.Store;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.Core.Registration;
+//using Microsoft.Health.Dicom.CosmosDb;
 using Microsoft.Health.Dicom.SqlServer.Features.ChangeFeed;
 using Microsoft.Health.Dicom.SqlServer.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.SqlServer.Features.ExtendedQueryTag.Error;
 using Microsoft.Health.Dicom.SqlServer.Features.Partition;
-using Microsoft.Health.Dicom.SqlServer.Features.Query;
-using Microsoft.Health.Dicom.SqlServer.Features.Retrieve;
+//using Microsoft.Health.Dicom.SqlServer.Features.Query;
+//using Microsoft.Health.Dicom.SqlServer.Features.Retrieve;
 using Microsoft.Health.Dicom.SqlServer.Features.Schema;
-using Microsoft.Health.Dicom.SqlServer.Features.Store;
+//using Microsoft.Health.Dicom.SqlServer.Features.Store;
 using Microsoft.Health.Dicom.SqlServer.Features.Workitem;
 using Microsoft.Health.Extensions.DependencyInjection;
 using Microsoft.Health.SqlServer.Api.Registration;
@@ -150,32 +151,33 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IServiceCollection AddSqlIndexDataStores(this IServiceCollection services)
         {
-            services.TryAddScoped<IIndexDataStore, SqlIndexDataStore>();
-            services.TryAddScoped<VersionedCache<ISqlIndexDataStore>>();
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV1>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV2>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV3>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV4>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV5>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV6>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV10>());
+            //services.TryAddScoped<IIndexDataStore, SqlIndexDataStore>();
+            //services.TryAddScoped<VersionedCache<ISqlIndexDataStore>>();
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV1>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV2>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV3>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV4>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV5>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV6>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlIndexDataStore, SqlIndexDataStoreV10>());
 
-            // TODO: Ideally, the logger can be registered in the API layer since it's agnostic to the implementation.
-            // However, the current implementation of the decorate method requires the concrete type to be already registered,
-            // so we need to register here. Need to some more investigation to see how we might be able to do this.
-            services.Decorate<ISqlIndexDataStore, SqlLoggingIndexDataStore>();
+            //// TODO: Ideally, the logger can be registered in the API layer since it's agnostic to the implementation.
+            //// However, the current implementation of the decorate method requires the concrete type to be already registered,
+            //// so we need to register here. Need to some more investigation to see how we might be able to do this.
+            //services.Decorate<ISqlIndexDataStore, SqlLoggingIndexDataStore>();
 
             return services;
         }
 
         private static IServiceCollection AddSqlInstanceStores(this IServiceCollection services)
         {
-            services.TryAddScoped<IInstanceStore, SqlInstanceStore>();
-            services.TryAddScoped<VersionedCache<ISqlInstanceStore>>();
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV1>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV4>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV6>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV10>());
+            //services.TryAddScoped<IInstanceStore, SqlInstanceStore>();
+            //services.TryAddScoped<VersionedCache<ISqlInstanceStore>>();
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV1>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV4>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV6>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlInstanceStore, SqlInstanceStoreV10>());
+            //services.TryAddScoped<IInstanceStore, CosmosDataStore>();
             return services;
         }
 
@@ -191,11 +193,13 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static IServiceCollection AddSqlQueryStores(this IServiceCollection services)
         {
-            services.TryAddScoped<IQueryStore, SqlQueryStore>();
-            services.TryAddScoped<VersionedCache<ISqlQueryStore>>();
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV4>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV6>());
-            services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV9>());
+            //services.TryAddScoped<IQueryStore, SqlQueryStore>();
+            //services.TryAddScoped<VersionedCache<ISqlQueryStore>>();
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV4>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV6>());
+            //services.TryAddEnumerable(ServiceDescriptor.Scoped<ISqlQueryStore, SqlQueryStoreV9>());
+
+            //services.TryAddScoped<IQueryStore, CosmosDataStore>();
 
             return services;
         }

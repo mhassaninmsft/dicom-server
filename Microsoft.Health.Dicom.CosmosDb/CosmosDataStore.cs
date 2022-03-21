@@ -22,10 +22,11 @@ using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
 using Microsoft.Health.Dicom.Core.Features.Retrieve;
 using Microsoft.Health.Dicom.Core.Messages.Retrieve;
+using Microsoft.Health.Dicom.Core.Models;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {
-    public class CosmosDataStore : IIndexDataStore, IDisposable, IMetadataStore, IFileStore, IQueryStore, IRetrieveMetadataService
+    public partial class CosmosDataStore : IIndexDataStore, IDisposable, IMetadataStore, IQueryStore, IRetrieveMetadataService, IInstanceStore
     {
         private readonly ILogger<CosmosDataStore> _logger;
         private readonly CosmosDbConfig _config;
@@ -119,7 +120,8 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public Task<IEnumerable<VersionedInstanceIdentifier>> RetrieveDeletedInstancesAsync(int batchSize, int maxRetries, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(new List<VersionedInstanceIdentifier>() as IEnumerable<VersionedInstanceIdentifier>);
+            //throw new NotImplementedException();
         }
 
         public Task<int> RetrieveNumExhaustedDeletedInstanceAttemptsAsync(int maxNumberOfRetries, CancellationToken cancellationToken = default)
@@ -135,34 +137,23 @@ namespace Microsoft.Health.Dicom.CosmosDb
             var example = System.Text.Json.JsonSerializer.Serialize(dicomDatasetWithoutBulkData, _jsonSerilzierSettings);
 
             dynamic? data_json = JsonConvert.DeserializeObject<dynamic>(example);
-            var versionString = dicomDatasetWithoutBulkData.ToVersionedInstanceIdentifier(version).SopInstanceUid;
-            var data = new DataField() { Id = versionString, Value = data_json ?? "None" };
+            var versionedInstanceId = dicomDatasetWithoutBulkData.ToVersionedInstanceIdentifier(version);
+            var versionString = versionedInstanceId.SopInstanceUid;
+            var data = new DataField()
+            {
+                Id = versionString, Value = data_json ?? "None", Version = versionedInstanceId.Version,
+                StudyId = versionedInstanceId.StudyInstanceUid, SeriesId = versionedInstanceId.SeriesInstanceUid, SopInstanceId = versionedInstanceId.SopInstanceUid
+            };
             _logger.LogInformation("Trying to upload {Object} to Cosmos", data);
             var res = await Container.CreateItemAsync(data, cancellationToken: cancellationToken);
             _logger.LogInformation("Done with uploading to Cosmos");
-
-            //try
-            //{
-            //    await using (Stream stream = _recyclableMemoryStreamManager.GetStream("dsadsadsa"))
-            //    await using (Utf8JsonWriter utf8Writer = new Utf8JsonWriter(stream))
-            //    {
-            //        // TODO: Use SerializeAsync in .NET 6
-            //        System.Text.Json.JsonSerializer.Serialize(utf8Writer, dicomDatasetWithoutBulkData, _jsonSerilzierSettings);
-            //        await utf8Writer.FlushAsync(cancellationToken);
-            //        stream.Seek(0, SeekOrigin.Begin);
-            //        ;
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    throw;
-            //}
         }
 
 
         public Task<DicomDataset> GetInstanceMetadataAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
         {
             //versionedInstanceIdentifier.SeriesInstanceUid
+            //return await JsonSerializer.DeserializeAsync<DicomDataset>(stream, _jsonSerializerOptions, t);
             throw new NotImplementedException();
         }
 
@@ -171,25 +162,23 @@ namespace Microsoft.Health.Dicom.CosmosDb
             throw new NotImplementedException();
         }
 
-        public Task<Uri> StoreFileAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, Stream stream, CancellationToken cancellationToken = default)
-        {
-            var uri1 = new Uri("https://www.google.com");
-            return Task.FromResult(uri1);
-        }
 
-        public Task<Stream> GetFileAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
+        public async Task<QueryResult> QueryAsync(int partitionKey, QueryExpression query, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
+            EnsureArg.IsNotNull(query, nameof(query));
+            var queryResource = query.QueryResource;
+            var filterConditions = query.FilterConditions;
+            foreach (var kv in filterConditions)
+            {
+                _logger.LogInformation("kv is {Kv}", kv);
+            }
+            var res1 = await GetItems();
+            var qresult = new QueryResult(new List<VersionedInstanceIdentifier>());
+            //var list1 = res1.Select(s => s.Id).Where(s => s!.Length >= 30).ToList();
+            var list2 = res1.Select(s => new VersionedInstanceIdentifier(s.StudyId, s.SeriesId, s.SopInstanceId, s.Version)).ToList() ?? new List<VersionedInstanceIdentifier>();
+            return new QueryResult(list2);
 
-        public Task DeleteFileIfExistsAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<QueryResult> QueryAsync(int partitionKey, QueryExpression query, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public Task<RetrieveMetadataResponse> RetrieveStudyInstanceMetadataAsync(string studyInstanceUid, string ifNoneMatch = null!, CancellationToken cancellationToken = default)
@@ -207,9 +196,44 @@ namespace Microsoft.Health.Dicom.CosmosDb
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifiersInStudyAsync(int partitionKey, string studyInstanceUid, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifiersInSeriesAsync(int partitionKey, string studyInstanceUid, string seriesInstanceUid, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifierAsync(int partitionKey, string studyInstanceUid, string seriesInstanceUid, string sopInstanceUid, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<VersionedInstanceIdentifier>> GetInstanceIdentifiersByWatermarkRangeAsync(WatermarkRange watermarkRange, IndexStatus indexStatus, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<WatermarkRange>> GetInstanceBatchesAsync(int batchSize, int batchCount, IndexStatus indexStatus, long? maxWatermark = null, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<InstanceMetadata>> GetInstanceIdentifierWithPropertiesAsync(int partitionKey, string studyInstanceUid, string seriesInstanceUid = null!, string sopInstanceUid = null!, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
         internal class DataField
         {
             public string? Id { get; init; }
+            public string? StudyId { get; init; }
+            public string? SeriesId { get; init; }
+            public string? SopInstanceId { get; init; }
+            public long Version { get; init; }
+
             //[flatten()]
             //TODO: change it to PayLoad
             public dynamic? Value { get; init; }

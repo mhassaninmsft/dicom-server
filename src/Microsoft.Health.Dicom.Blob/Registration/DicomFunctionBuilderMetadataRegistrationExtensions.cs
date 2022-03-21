@@ -9,11 +9,10 @@ using Microsoft.Health.Blob.Configs;
 using Microsoft.Health.Dicom.Blob;
 //using Microsoft.Health.Dicom.Blob.Features.Storage;
 using Microsoft.Health.Dicom.Blob.Utilities;
-using Microsoft.Health.Dicom.Core.Features.Common;
+//using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Registration;
-using Microsoft.Health.Dicom.CosmosDb;
 //using Microsoft.Health.Dicom.CosmosDb;
-using Microsoft.Health.Dicom.CosmosDb.Config;
+//using Microsoft.Health.Dicom.CosmosDb.Config;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -34,11 +33,11 @@ namespace Microsoft.Extensions.DependencyInjection
             EnsureArg.IsNotNull(functionsBuilder, nameof(functionsBuilder));
             EnsureArg.IsNotNull(configuration, nameof(configuration));
 
-            functionsBuilder.Services.AddOptions<CosmosDbConfig>()
-           .Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
-           {
-               binderOptions.ErrorOnUnknownConfiguration = true;
-           });
+            // functionsBuilder.Services.AddOptions<CosmosDbConfig>()
+            //.Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
+            //{
+            //    binderOptions.ErrorOnUnknownConfiguration = true;
+            //});
             //.ValidateDataAnnotations()
             //.ValidateOnStart();
 
@@ -47,7 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddSingleton<MetadataStoreConfigurationSection>()
                 .AddTransient<IStoreConfigurationSection>(sp => sp.GetRequiredService<MetadataStoreConfigurationSection>())
                 //.AddPersistence<IMetadataStore, BlobMetadataStore, LoggingMetadataStore>()
-                .AddPersistence<IMetadataStore, CosmosDataStore, LoggingMetadataStore>()
+                //.AddPersistence<IMetadataStore, CosmosDataStore, LoggingMetadataStore>()
 
                 .AddBlobServiceClient(blobConfig)
                 .Configure<BlobContainerConfiguration>(Constants.MetadataContainerConfigurationName, c => c.ContainerName = containerName);
