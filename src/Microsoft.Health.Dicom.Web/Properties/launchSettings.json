@@ -2,24 +2,35 @@
   "profiles": {
     "DicomWebSecurityDisabled": {
       "commandName": "Project",
+      "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DicomServer:Security:Enabled": "false"
       },
-      "applicationUrl": "https://localhost:63838/",
-      "launchBrowser": true
+      "applicationUrl": "https://localhost:63838/"
     },
     "DicomWebSecurityEnabled": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "DicomServer:Security:Enabled": "true",
         "DicomServer:Security:Authentication:Audience": "health-api",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "TestAuthEnvironment:FilePath": "..//..//testauthenvironment.json",
         "DicomServer:Security:Authentication:Authority": "https://localhost:63838/",
         "DicomServer:Security:Authorization:Enabled": "true",
-        "TestAuthEnvironment:FilePath": "..//..//testauthenvironment.json"
+        "DicomServer:Security:Enabled": "true"
       },
       "applicationUrl": "https://localhost:63838/"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "launchBrowser": true,
+      "launchUrl": "https://localhost:63838/",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://localhost:63838/",
+        "DicomServer:Security:Enabled": "false"
+      },
+      "distributionName": ""
     }
   }
 }
