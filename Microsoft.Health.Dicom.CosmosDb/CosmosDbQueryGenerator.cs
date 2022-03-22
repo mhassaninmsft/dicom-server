@@ -42,48 +42,33 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             // Ensure not null
             EnsureArg.IsNotNull(rangeValueMatchCondition, nameof(rangeValueMatchCondition));
-            //*** TODO *** do we want Linq?
+            //already has tag and value
 
-            // get the table/container
-            //*** TODO *** do we need strong typing?
-            //*** TODO *** do we need the equivalent of the DicomTageSqlEntry.cs?
-            //*** TODO *** do we need equivalent of GetTableAlias?
-            var tableAlias = "i am the container";
+
+            // *** TODO *** do we need strong typing? ish
+            // *** TODO *** do we need the equivalent of the DicomTageSqlEntry.cs? YES
+            // *** TODO *** do we need equivalent of GetTableAlias? YES
+            
             //get the tag
-            //*** TODO *** limit the date comparisons to the two tags supported currently
-            var tagname = ""
+            // *** TODO *** limit the date comparisons to the two tags supported currently
+            var tagName = rangeValueMatchCondition.QueryTag;
             // pick out the two operands fromDate & toDate
-            var fromDate = "20200922";
-            var toDate = "20200923";
+            var fromDate = rangeValueMatchCondition.Minimum;
+            var toDate = rangeValueMatchCondition.Maximum;
+
 
             string condition = "";
 
-            if (!fromDate && !toDate)
-            {
-                // if neither are present, error
-                throw new Exception("Providing no dates in range is not allowed. Please provide one or both the range bounds.");
-            }
-            else if (!fromDate && toDate)
-            {
-                // if from date present but not todate, get everrything after that date
-            }
-            else if (fromDate && !toDate)
-            {
-                // if to date present but not fromdate, get everything before this date
-            }
-            else
-            {
-                // use BETWEEN-equivalent
-                // ***TODO*** do we ensure strong typing going in?
-                // INCLUSIVE
-                condition = $"(c[{tagName}] BETWEEN {fromDate} AND {toDate})";
+            // use BETWEEN-equivalent
+            // INCLUSIVE
+            // ***TODO** ideally not string plaintext to prevent sql injection
+            condition = $"(c.{tagName} BETWEEN {fromDate} AND {toDate})";
 
 
-                //INSPO:
-                //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
-            }
-
-
+            //INSPO: (later)
+            //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
+            AddToQuery(condition);
+            //*** TODO *** do we want Linq? eventually
             //throw new NotImplementedException();
         }
 
