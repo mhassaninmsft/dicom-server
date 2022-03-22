@@ -150,11 +150,20 @@ namespace Microsoft.Health.Dicom.CosmosDb
         }
 
 
-        public Task<DicomDataset> GetInstanceMetadataAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
+        public async Task<DicomDataset> GetInstanceMetadataAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
         {
+            EnsureArg.IsNotNull(versionedInstanceIdentifier, nameof(versionedInstanceIdentifier));
+            var item = await GetItemById(versionedInstanceIdentifier);
+            // Change here
             //versionedInstanceIdentifier.SeriesInstanceUid
             //return await JsonSerializer.DeserializeAsync<DicomDataset>(stream, _jsonSerializerOptions, t);
-            throw new NotImplementedException();
+
+            //TODO: There should be more performant way of doing this
+            //var serizlizedData = JsonConvert.SerializeObject(item.Value);
+            //var dicomDataSet = JsonConvert.DeserializeObject<DicomDataset>(serizlizedData);
+            var serializedData = System.Text.Json.JsonSerializer.Serialize(item, _jsonSerilzierSettings);
+            var dicomDataSet = System.Text.Json.JsonSerializer.Deserialize<DicomDataset>(serializedData, _jsonSerilzierSettings) ?? throw new ArgumentException("deserilzied data is null");
+            return dicomDataSet;
         }
 
         public Task DeleteInstanceMetadataIfExistsAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
