@@ -34,7 +34,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
             else
             {
-                _query += "AND";
+                _query += "AND"; // *** TODO *** does this need spaces?
             }
             _query += val;
         }
@@ -45,30 +45,30 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //already has tag and value
 
 
-            // *** TODO *** do we need strong typing? ish
-            // *** TODO *** do we need the equivalent of the DicomTageSqlEntry.cs? YES
-            // *** TODO *** do we need equivalent of GetTableAlias? YES
-            
+            // ****** DONE *** do we need the equivalent of the DicomTageSqlEntry.cs? YES
+
+            // *** TODO *** Do we need the equivalents of:
+            // //using Microsoft.Health.Dicom.SqlServer.Features.Schema.Model;
+            // //using Microsoft.Health.SqlServer.Features.Schema.Model;
+
+            // ****** DONE *** do we need equivalent of GetTableAlias? YES-ish/maybe
+
             //get the tag
             // *** TODO *** limit the date comparisons to the two tags supported currently
             var tagName = rangeValueMatchCondition.QueryTag;
-            // pick out the two operands fromDate & toDate
             var fromDate = rangeValueMatchCondition.Minimum;
             var toDate = rangeValueMatchCondition.Maximum;
-
-
-            string condition = "";
 
             // use BETWEEN-equivalent
             // INCLUSIVE
             // ***TODO** ideally not string plaintext to prevent sql injection
-            condition = $"(c.{tagName} BETWEEN {fromDate} AND {toDate})";
-
+            string condition = $"(c.{tagName} BETWEEN {fromDate} AND {toDate})";
 
             //INSPO: (later)
+            //****** DONE *** do we want Linq? eventually
             //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
+
             AddToQuery(condition);
-            //*** TODO *** do we want Linq? eventually
             //throw new NotImplementedException();
         }
 
