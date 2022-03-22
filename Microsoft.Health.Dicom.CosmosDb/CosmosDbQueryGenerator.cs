@@ -40,7 +40,51 @@ namespace Microsoft.Health.Dicom.CosmosDb
         }
         public override void Visit(DateRangeValueMatchCondition rangeValueMatchCondition)
         {
-            throw new NotImplementedException();
+            // Ensure not null
+            EnsureArg.IsNotNull(rangeValueMatchCondition, nameof(rangeValueMatchCondition));
+            //*** TODO *** do we want Linq?
+
+            // get the table/container
+            //*** TODO *** do we need strong typing?
+            //*** TODO *** do we need the equivalent of the DicomTageSqlEntry.cs?
+            //*** TODO *** do we need equivalent of GetTableAlias?
+            var tableAlias = "i am the container";
+            //get the tag
+            //*** TODO *** limit the date comparisons to the two tags supported currently
+            var tagname = ""
+            // pick out the two operands fromDate & toDate
+            var fromDate = "20200922";
+            var toDate = "20200923";
+
+            string condition = "";
+
+            if (!fromDate && !toDate)
+            {
+                // if neither are present, error
+                throw new Exception("Providing no dates in range is not allowed. Please provide one or both the range bounds.");
+            }
+            else if (!fromDate && toDate)
+            {
+                // if from date present but not todate, get everrything after that date
+            }
+            else if (fromDate && !toDate)
+            {
+                // if to date present but not fromdate, get everything before this date
+            }
+            else
+            {
+                // use BETWEEN-equivalent
+                // ***TODO*** do we ensure strong typing going in?
+                // INCLUSIVE
+                condition = $"(c[{tagName}] BETWEEN {fromDate} AND {toDate})";
+
+
+                //INSPO:
+                //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
+            }
+
+
+            //throw new NotImplementedException();
         }
 
         public override void Visit(DateSingleValueMatchCondition dateSingleValueMatchCondition)
