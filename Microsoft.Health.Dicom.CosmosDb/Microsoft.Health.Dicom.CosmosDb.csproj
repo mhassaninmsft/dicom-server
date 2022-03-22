@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -13,6 +13,9 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(SdkPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="$(SdkPackageVersion)" />
     <PackageReference Include="Microsoft.Health.Abstractions" Version="$(HealthcareSharedPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="$(SdkPackageVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="$(SdkPackageVersion)" />
+
     <PackageReference Include="Microsoft.Health.Extensions.DependencyInjection" Version="$(HealthcareSharedPackageVersion)" />
   </ItemGroup>
 

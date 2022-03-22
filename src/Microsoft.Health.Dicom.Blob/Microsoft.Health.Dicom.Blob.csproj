@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Microsoft.Health.Dicom.CosmosDb\Microsoft.Health.Dicom.CosmosDb.csproj" />
+    <!--<ProjectReference Include="..\..\Microsoft.Health.Dicom.CosmosDb\Microsoft.Health.Dicom.CosmosDb.csproj" />-->
     <ProjectReference Include="..\Microsoft.Health.Dicom.Core\Microsoft.Health.Dicom.Core.csproj" />
   </ItemGroup>
 
