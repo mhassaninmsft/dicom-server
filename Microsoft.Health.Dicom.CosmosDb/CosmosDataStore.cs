@@ -134,14 +134,15 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             // Creates a copy of the dataset with bulk data removed.
             DicomDataset dicomDatasetWithoutBulkData = dicomDataset.CopyWithoutBulkDataItems();
-            var example = System.Text.Json.JsonSerializer.Serialize(dicomDatasetWithoutBulkData, _jsonSerilzierSettings);
+            var serializedValue = System.Text.Json.JsonSerializer.Serialize(dicomDatasetWithoutBulkData, _jsonSerilzierSettings);
 
-            dynamic? data_json = JsonConvert.DeserializeObject<dynamic>(example);
+            dynamic? data_json = JsonConvert.DeserializeObject<dynamic>(serializedValue);
+            //dynamic data_json = example;
             var versionedInstanceId = dicomDatasetWithoutBulkData.ToVersionedInstanceIdentifier(version);
             var versionString = versionedInstanceId.SopInstanceUid;
             var data = new DataField()
             {
-                Id = versionString, Value = data_json ?? "None", Version = versionedInstanceId.Version,
+                Id = versionString, Value = data_json ?? "None", Version = versionedInstanceId.Version, SerializedValue = serializedValue,
                 StudyId = versionedInstanceId.StudyInstanceUid, SeriesId = versionedInstanceId.SeriesInstanceUid, SopInstanceId = versionedInstanceId.SopInstanceUid
             };
             _logger.LogInformation("Trying to upload {Object} to Cosmos", data);
@@ -161,8 +162,13 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //TODO: There should be more performant way of doing this
             //var serizlizedData = JsonConvert.SerializeObject(item.Value);
             //var dicomDataSet = JsonConvert.DeserializeObject<DicomDataset>(serizlizedData);
-            var serializedData = System.Text.Json.JsonSerializer.Serialize(item, _jsonSerilzierSettings);
-            var dicomDataSet = System.Text.Json.JsonSerializer.Deserialize<DicomDataset>(serializedData, _jsonSerilzierSettings) ?? throw new ArgumentException("deserilzied data is null");
+            //string serializedData = System.Text.Json.JsonSerializer.Serialize(item.Value, _jsonSerilzierSettings) ?? throw new ArgumentException("serizlied data can't be null");
+            string serializedData = item.SerializedValue ?? throw new ArgumentException("serialized Data should not be null");
+            var streamBytes = System.Text.Encoding.UTF8.GetBytes(serializedData);
+            using MemoryStream stream = new MemoryStream(streamBytes);
+            DicomDataset dc1 = new DicomDataset();
+            //dc1.Add( new ;
+            var dicomDataSet = await System.Text.Json.JsonSerializer.DeserializeAsync<DicomDataset>(stream, _jsonSerilzierSettings, cancellationToken) ?? throw new ArgumentException("deserilzied data is null");
             return dicomDataSet;
         }
 
@@ -246,6 +252,8 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //[flatten()]
             //TODO: change it to PayLoad
             public dynamic? Value { get; init; }
+
+            public string? SerializedValue { get; init; }
         }
     }
 }

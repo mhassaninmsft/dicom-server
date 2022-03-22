@@ -21,6 +21,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             //var data = new DataField() { Value = new { val = 45 } };
             var query = "SELECT * FROM c WHERE c['value']['00080020']['Value'][0] = '20200922'";
+            //var query = "SELECT * FROM c";
             var res1 = Container.GetItemQueryIterator<DataField>(query);
             var list = new List<DataField>();
             while (res1.HasMoreResults)
