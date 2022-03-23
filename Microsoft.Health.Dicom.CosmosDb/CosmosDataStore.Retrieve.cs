@@ -37,7 +37,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
         private async Task<DataField> GetItemById(VersionedInstanceIdentifier versionedInstanceIdentifier)
         {
             //var data = new DataField() { Value = new { val = 45 } };
-            var id = versionedInstanceIdentifier.SopInstanceUid;
+            var id = GetIdFromVersionedInstanceIdentifier(versionedInstanceIdentifier);
             //TODO we should use something similar to Parameterized queries 
             var query = $"SELECT * FROM c WHERE c.id='{id}'";
             var res1 = Container.GetItemQueryIterator<DataField>(query);
@@ -58,6 +58,14 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
 
             return list[0];
+
+        }
+
+        private async Task DeleteItembyId(VersionedInstanceIdentifier versionedInstanceIdentifier)
+        {
+            var id = GetIdFromVersionedInstanceIdentifier(versionedInstanceIdentifier);
+            var instanceToBeDeleted = new DataField() { Id = id };
+            var result = await Container.DeleteItemAsync<DataField>(id, new Azure.Cosmos.PartitionKey(id));
 
         }
     }

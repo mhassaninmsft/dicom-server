@@ -79,6 +79,11 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //throw new NotImplementedException();
         }
 
+        public static string GetIdFromVersionedInstanceIdentifier(VersionedInstanceIdentifier versionedInstanceIdentifier)
+        {
+            EnsureArg.IsNotNull(versionedInstanceIdentifier, nameof(versionedInstanceIdentifier));
+            return versionedInstanceIdentifier.SopInstanceUid;
+        }
 
         internal class DataField
         {

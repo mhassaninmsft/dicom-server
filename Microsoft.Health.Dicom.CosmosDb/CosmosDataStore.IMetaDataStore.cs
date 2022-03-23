@@ -27,7 +27,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             dynamic? data_json = JsonConvert.DeserializeObject<dynamic>(serializedValue);
             //dynamic data_json = example;
             var versionedInstanceId = dicomDatasetWithoutBulkData.ToVersionedInstanceIdentifier(version);
-            var versionString = versionedInstanceId.SopInstanceUid;
+            var versionString = GetIdFromVersionedInstanceIdentifier(versionedInstanceId);
             var data = new DataField()
             {
                 Id = versionString, Value = data_json ?? "None", Version = versionedInstanceId.Version, SerializedValue = serializedValue,
@@ -60,9 +60,10 @@ namespace Microsoft.Health.Dicom.CosmosDb
             return dicomDataSet;
         }
 
-        public Task DeleteInstanceMetadataIfExistsAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
+        public async Task DeleteInstanceMetadataIfExistsAsync(VersionedInstanceIdentifier versionedInstanceIdentifier, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            await DeleteItembyId(versionedInstanceIdentifier);
+
         }
 
     }
