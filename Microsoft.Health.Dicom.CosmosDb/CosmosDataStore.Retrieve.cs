@@ -32,9 +32,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
                 }
             }
             return list;
-            //throw new NotImplementedException();
-            //return Task.FromResult(new DataField());
-            //Container.GetItemLinqQueryable()
         }
 
         private async Task<DataField> GetItemById(VersionedInstanceIdentifier versionedInstanceIdentifier)
