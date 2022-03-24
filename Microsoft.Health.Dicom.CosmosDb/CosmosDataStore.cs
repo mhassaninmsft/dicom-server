@@ -66,10 +66,15 @@ namespace Microsoft.Health.Dicom.CosmosDb
             EnsureArg.IsNotNull(query, nameof(query));
             var queryResource = query.QueryResource;
             var filterConditions = query.FilterConditions;
-            foreach (var kv in filterConditions)
+            QueryFilterConditionVisitor vs = new CosmosDbQueryGenerator();
+            foreach (var conditoin in filterConditions)
             {
-                _logger.LogInformation("kv is {Kv}", kv);
+                //vs.Visit(conditoin);
+                conditoin.Accept(vs);
             }
+            //// Finally Get the query here
+            //vs.GetQuery();//TODO, Hannak To implement
+
             var res1 = await GetItems();
             var qresult = new QueryResult(new List<VersionedInstanceIdentifier>());
             //var list1 = res1.Select(s => s.Id).Where(s => s!.Length >= 30).ToList();

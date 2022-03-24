@@ -71,5 +71,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             throw new NotImplementedException();
         }
+
     }
 }

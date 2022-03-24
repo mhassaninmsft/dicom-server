@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Health.Development.IdentityProvider.Registration;
+//using Microsoft.Health.Dicom.Core.Features.Delete;
 using Microsoft.Health.Dicom.Core.Features.Security;
 using Microsoft.Health.Dicom.CosmosDb.Registration;
 using Microsoft.Health.Dicom.Operations.Client;
@@ -42,6 +43,7 @@ namespace Microsoft.Health.Dicom.Web
                 .AddBackgroundWorkers()
                 .AddHostedServices();
 
+            //services.AddScoped<IDeleteService, CosmosDeleteService>();
             AddApplicationInsightsTelemetry(services);
 
 
