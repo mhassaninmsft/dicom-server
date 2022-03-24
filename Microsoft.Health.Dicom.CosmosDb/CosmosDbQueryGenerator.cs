@@ -11,6 +11,7 @@
 
 using EnsureThat;
 using Microsoft.Health.Dicom.Core.Features.Query;
+using System.Text.RegularExpressions;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {
@@ -38,6 +39,12 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
             _query += val;
         }
+
+        public string OutputQuery()
+        {
+            return _query;
+        }
+
         public override void Visit(DateRangeValueMatchCondition rangeValueMatchCondition)
         {
             // Ensure not null
@@ -55,14 +62,20 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             //get the tag
             // *** TODO *** limit the date comparisons to the two tags supported currently
-            var tagName = rangeValueMatchCondition.QueryTag;
+
+            var queryTag = rangeValueMatchCondition.QueryTag;
+            var tagName = queryTag.Tag.ToString().Trim('(', ')');
+            tagName = Regex.Replace(tagName, ",", "");
             var fromDate = rangeValueMatchCondition.Minimum;
+            var fromDateFormatted = fromDate.ToString("yyyyMMdd");
             var toDate = rangeValueMatchCondition.Maximum;
+            var toDateFormatted = toDate.ToString("yyyyMMdd");
 
             // use BETWEEN-equivalent
             // INCLUSIVE
             // ***TODO** ideally not string plaintext to prevent sql injection
-            string condition = $"(c.{tagName} BETWEEN {fromDate} AND {toDate})";
+            // c["value"]["00080020"]["Value"][0] <= "20220324"
+            string condition = $"(c['value']['{tagName}']['Value'][0] BETWEEN '{fromDateFormatted}' AND '{toDateFormatted}')";
 
             //INSPO: (later)
             //****** DONE *** do we want Linq? eventually

@@ -70,7 +70,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             {
                 _logger.LogInformation("kv is {Kv}", kv);
             }
-            var res1 = await GetItems();
+            var res1 = await GetItems(query.FilterConditions);
             var qresult = new QueryResult(new List<VersionedInstanceIdentifier>());
             //var list1 = res1.Select(s => s.Id).Where(s => s!.Length >= 30).ToList();
             var list2 = res1.Select(s => new VersionedInstanceIdentifier(s.StudyId, s.SeriesId, s.SopInstanceId, s.Version)).ToList() ?? new List<VersionedInstanceIdentifier>();

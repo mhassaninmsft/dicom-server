@@ -12,16 +12,24 @@
 //using FellowOakDicom;
 
 using Microsoft.Health.Dicom.Core.Features.Model;
+using Microsoft.Health.Dicom.Core.Features.Query;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {
     public partial class CosmosDataStore
     {
-        private async Task<IEnumerable<DataField>> GetItems()
+        private async Task<IEnumerable<DataField>> GetItems(IReadOnlyCollection<QueryFilterCondition> filterConditions)
         {
-            //var data = new DataField() { Value = new { val = 45 } };
-            var query = "SELECT * FROM c WHERE c['value']['00080020']['Value'][0] = '20200922'";
-            //var query = "SELECT * FROM c";
+            CosmosDbQueryGenerator cosmosDbQueryGenerator = new CosmosDbQueryGenerator();
+            var query = "";
+            foreach (var condition in filterConditions)
+            {
+                Console.WriteLine($" THE CONDITIONS ARE THIS: {condition.ToString}");
+                condition.Accept(cosmosDbQueryGenerator);
+            }
+            // Take the conditions and populate into the SQL query
+            // **** TODO **** This should ultimately be written differently to potentially avoid sql injection vulnerabilities
+            query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
             var res1 = Container.GetItemQueryIterator<DataField>(query);
             var list = new List<DataField>();
             while (res1.HasMoreResults)
