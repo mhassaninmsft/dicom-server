@@ -35,7 +35,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
             else
             {
-                _query += "AND"; // *** TODO *** does this need spaces?
+                _query += " AND "; // *** TODO *** does this need spaces?
             }
             _query += val;
         }
@@ -49,32 +49,21 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             // Ensure not null
             EnsureArg.IsNotNull(rangeValueMatchCondition, nameof(rangeValueMatchCondition));
-            //already has tag and value
-
-
-            // ****** DONE *** do we need the equivalent of the DicomTageSqlEntry.cs? YES
-
-            // *** TODO *** Do we need the equivalents of:
-            // //using Microsoft.Health.Dicom.SqlServer.Features.Schema.Model;
-            // //using Microsoft.Health.SqlServer.Features.Schema.Model;
-
-            // ****** DONE *** do we need equivalent of GetTableAlias? YES-ish/maybe
 
             //get the tag
             // *** TODO *** limit the date comparisons to the two tags supported currently
 
-            var queryTag = rangeValueMatchCondition.QueryTag;
+            var queryTag = rangeValueMatchCondition.QueryTag; // initally formatted as "(####,####)"
             var tagName = queryTag.Tag.ToString().Trim('(', ')');
             tagName = Regex.Replace(tagName, ",", "");
+
             var fromDate = rangeValueMatchCondition.Minimum;
-            var fromDateFormatted = fromDate.ToString("yyyyMMdd");
             var toDate = rangeValueMatchCondition.Maximum;
+            // match on formatting written to cosmos
+            var fromDateFormatted = fromDate.ToString("yyyyMMdd");
             var toDateFormatted = toDate.ToString("yyyyMMdd");
 
-            // use BETWEEN-equivalent
-            // INCLUSIVE
             // ***TODO** ideally not string plaintext to prevent sql injection
-            // c["value"]["00080020"]["Value"][0] <= "20220324"
             string condition = $"(c['value']['{tagName}']['Value'][0] BETWEEN '{fromDateFormatted}' AND '{toDateFormatted}')";
 
             //INSPO: (later)
@@ -82,36 +71,66 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
 
             AddToQuery(condition);
-            //throw new NotImplementedException();
         }
 
         public override void Visit(DateSingleValueMatchCondition dateSingleValueMatchCondition)
         {
             EnsureArg.IsNotNull(dateSingleValueMatchCondition, nameof(dateSingleValueMatchCondition));
-            string tagName = dateSingleValueMatchCondition.QueryTag.GetName();
-            string tagValue = dateSingleValueMatchCondition.Value.ToString();
-            string condition = $"(c['{tagName}'] = {tagValue})";
+            var queryTag = dateSingleValueMatchCondition.QueryTag;
+            var tagName = queryTag.Tag.ToString().Trim('(', ')');
+            tagName = Regex.Replace(tagName, ",", "");
+            string tagValue = dateSingleValueMatchCondition.Value.ToString("yyyyMMdd");
+            string condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
             AddToQuery(condition);
         }
 
         public override void Visit(PersonNameFuzzyMatchCondition fuzzyMatchCondition)
         {
-            throw new NotImplementedException();
+            EnsureArg.IsNotNull(fuzzyMatchCondition, nameof(fuzzyMatchCondition));
+            var queryTag = fuzzyMatchCondition.QueryTag;
+            var tagName = queryTag.Tag.ToString().Trim('(', ')');
+            tagName = Regex.Replace(tagName, ",", "");
+            var tagValue = fuzzyMatchCondition.Value.ToString();
+            var condition = $"STARTSWITH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{tagValue}')";
+            //throw new NotImplementedException();
+            AddToQuery(condition);
         }
 
         public override void Visit(DoubleSingleValueMatchCondition doubleSingleValueMatchCondition)
         {
-            throw new NotImplementedException();
+            //Ensure the condition is not null
+            EnsureArg.IsNotNull(doubleSingleValueMatchCondition, nameof(doubleSingleValueMatchCondition));
+            //doubleSingleValueMatchCondition;
+            // get the tag & value
+            var queryTag = doubleSingleValueMatchCondition.QueryTag;
+            var tagName = queryTag.Tag.ToString().Trim('(', ')');
+            tagName = Regex.Replace(tagName, ",", "");
+            var tagValue = doubleSingleValueMatchCondition.Value;
+            var condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
+
+            // add to query
+            AddToQuery(condition);
+            //throw new NotImplementedException();
         }
 
         public override void Visit(LongRangeValueMatchCondition longRangeValueMatchCondition)
         {
+            // *** TODO *** based on conformance statement, no ranged search on longs ????
             throw new NotImplementedException();
+
         }
 
         public override void Visit(LongSingleValueMatchCondition longSingleValueMatchCondition)
         {
-            throw new NotImplementedException();
+            EnsureArg.IsNotNull(longSingleValueMatchCondition, nameof(longSingleValueMatchCondition));
+            var queryTag = longSingleValueMatchCondition.QueryTag;
+            var tagName = queryTag.Tag.ToString().Trim('(', ')');
+            tagName = Regex.Replace(tagName, ",", "");
+            var tagValue = longSingleValueMatchCondition.Value;
+            var condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
+
+            AddToQuery(condition);
+            //throw new NotImplementedException();
         }
     }
 }

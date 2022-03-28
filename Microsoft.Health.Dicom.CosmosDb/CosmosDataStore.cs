@@ -66,6 +66,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             EnsureArg.IsNotNull(query, nameof(query));
             var queryResource = query.QueryResource;
             var filterConditions = query.FilterConditions;
+
             foreach (var kv in filterConditions)
             {
                 _logger.LogInformation("kv is {Kv}", kv);
