@@ -29,6 +29,10 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
             // Take the conditions and populate into the SQL query
             // **** TODO **** This should ultimately be written differently to potentially avoid sql injection vulnerabilities
+            //INSPO? QueryDefinition query = new QueryDefinition("SELECT * FROM Families f WHERE f.id = @id AND f.Address.City = @city")
+            //    .WithParameter("@id", "AndersonFamily")
+            //    .WithParameter("@city", "Seattle");
+
             query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
             var res1 = Container.GetItemQueryIterator<DataField>(query);
             var list = new List<DataField>();
@@ -46,7 +50,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             //var data = new DataField() { Value = new { val = 45 } };
             var id = GetIdFromVersionedInstanceIdentifier(versionedInstanceIdentifier);
-            //TODO we should use something similar to Parameterized queries 
             var query = $"SELECT * FROM c WHERE c.id='{id}'";
             var res1 = Container.GetItemQueryIterator<DataField>(query);
             var list = new List<DataField>();
