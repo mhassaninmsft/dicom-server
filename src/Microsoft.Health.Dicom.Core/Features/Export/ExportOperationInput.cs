@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------
 
 namespace Microsoft.Health.Dicom.Core.Features.Export;
-public class ExportOperationInput
+public record ExportOperationInput
 {
     public ExportOperationSource Source { get; set; }
 

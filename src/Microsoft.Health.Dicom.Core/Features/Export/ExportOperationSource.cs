@@ -4,13 +4,14 @@
 // -------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
+using Microsoft.Health.Dicom.Core.Features.Export.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.Export;
-public class ExportOperationSource
+public record ExportOperationSource
 {
-    public IReadOnlySet<string> ExportStudies { get; set; }
+    public IReadOnlySet<Study> Studies { get; set; }
+    // Encompasses Multiple Series, the word Series is both the Singular and Plural Form
+    public IReadOnlySet<Series> Series { get; set; }
+    public IReadOnlySet<Instance> Instances { get; set; }
 
-    public IReadOnlyDictionary<string, IReadOnlySet<string>> ExportSeries { get; set; }
-
-    public IReadOnlyDictionary<string, IReadOnlyDictionary<string, IReadOnlySet<string>>> ExportInstances { get; set; }
 }

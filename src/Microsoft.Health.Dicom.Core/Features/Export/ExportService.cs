@@ -13,6 +13,8 @@ using Microsoft.Health.Dicom.Core.Features.Operations;
 using Microsoft.Health.Dicom.Core.Features.Routing;
 using Microsoft.Health.Dicom.Core.Messages.Export;
 using Microsoft.Health.Operations;
+using System.Linq;
+using Microsoft.Health.Dicom.Core.Features.Export.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 
@@ -36,19 +38,56 @@ public class ExportService : IExportService
     /// <returns>The response.</returns>
     public async Task<ExportResponse> ExportAsync(ExportInput exportInput, CancellationToken cancellationToken)
     {
+        EnsureArg.IsNotNull(exportInput, nameof(exportInput));
         Guid operationId = await _client.StartExportAsync(GetOperationInput(exportInput), cancellationToken);
         return new ExportResponse(new OperationReference(operationId, _uriResolver.ResolveOperationStatusUri(operationId)));
     }
 
-    private static ExportOperationInput GetOperationInput(ExportInput input)
+    public static ExportOperationInput GetOperationInput(ExportInput input)
     {
+        EnsureArg.IsNotNull(input, nameof(input));
         // TODO: inmplement this method
-        HashSet<string> studies = new HashSet<string>();
-        Dictionary<string, HashSet<string>> series = new Dictionary<string, HashSet<string>>();
-        Dictionary<string, Dictionary<string, HashSet<string>>> instances = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-        foreach (string id in input.Source.IdFilter.Ids)
+        var separatorCharacter = '/';
+        var instances = new HashSet<Instance>();
+        var series = new HashSet<Series>();
+        var studies = new HashSet<Study>();
+        foreach (var id in input.Source.IdFilter.Ids)
         {
+            var numForwardSlashes = id.Count(c => c == separatorCharacter);
+            var splitted = id.Split(separatorCharacter);
+            switch (numForwardSlashes)
+            {
+                case 0: // Study
+                    var studyId = splitted[0];
+                    studies.Add(new Study(studyId));
+                    break;
+                case 1: // Series
+                    studyId = splitted[0];
+                    var seriesId = splitted[1];
+                    series.Add(new Series(studyId, seriesId));
+                    break;
+                case 2:  //Instance
+                    studyId = splitted[0];
+                    seriesId = splitted[1];
+                    var instanceId = splitted[2];
+                    instances.Add(new Instance(studyId, seriesId, instanceId));
+                    break;
+                default:
+                    break;
+            }
 
         }
+        var exportOperationInput = new ExportOperationInput()
+        {
+            Destination = input.Destination,
+            Source = new ExportOperationSource()
+            {
+                Instances = instances,
+                Series = series,
+                Studies = studies,
+            }
+        };
+        return exportOperationInput;
+
     }
 }
