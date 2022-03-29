@@ -16,17 +16,43 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifiersInStudyAsync(int partitionKey, string studyInstanceUid, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return GetInstanceIdentifierAsync(partitionKey, studyInstanceUid, seriesInstanceUid: null, sopInstanceUid: null, cancellationToken);
         }
 
         public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifiersInSeriesAsync(int partitionKey, string studyInstanceUid, string seriesInstanceUid, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return GetInstanceIdentifierAsync(partitionKey, studyInstanceUid, seriesInstanceUid, sopInstanceUid: null, cancellationToken);
         }
 
-        public Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifierAsync(int partitionKey, string studyInstanceUid, string seriesInstanceUid, string sopInstanceUid, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<VersionedInstanceIdentifier>> GetInstanceIdentifierAsync(int partitionKey, string studyInstanceUid, string? seriesInstanceUid, string? sopInstanceUid, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            var query = "";
+
+            if (!string.IsNullOrEmpty(studyInstanceUid) && !string.IsNullOrEmpty(seriesInstanceUid) && !string.IsNullOrEmpty(sopInstanceUid))
+            {
+                query = $"SELECT * FROM c WHERE c.studyId = '{studyInstanceUid}' AND c.seriesId = '{seriesInstanceUid}' AND c.sopInstanceId = '{sopInstanceUid}' ";
+            }
+
+            else if (string.IsNullOrEmpty(seriesInstanceUid) && string.IsNullOrEmpty(sopInstanceUid))
+            {
+                query = $"SELECT * FROM c WHERE c.studyId = '{studyInstanceUid}'";
+            }
+            else if (string.IsNullOrEmpty(sopInstanceUid))
+            {
+                query = $"SELECT * FROM c WHERE c.studyId = '{studyInstanceUid}' AND c.seriesId = '{seriesInstanceUid}'";
+            }
+
+            var res1 = Container.GetItemQueryIterator<DataField>(query);
+            var list = new List<VersionedInstanceIdentifier>();
+
+            while (res1.HasMoreResults)
+            {
+                foreach (var item in await res1.ReadNextAsync(cancellationToken))
+                {
+                    list.Add(new VersionedInstanceIdentifier(item.StudyId, item.SeriesId, item.SopInstanceId, item.Version, partitionKey));
+                }
+            }
+            return list;
         }
 
         public Task<IReadOnlyList<VersionedInstanceIdentifier>> GetInstanceIdentifiersByWatermarkRangeAsync(WatermarkRange watermarkRange, IndexStatus indexStatus, CancellationToken cancellationToken = default)
