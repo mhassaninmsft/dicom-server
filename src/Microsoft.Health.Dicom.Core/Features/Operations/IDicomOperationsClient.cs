@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Health.Dicom.Core.Exceptions;
-using Microsoft.Health.Dicom.Core.Features.Export;
+using Microsoft.Health.Dicom.Core.Models.Export;
 using Microsoft.Health.Dicom.Core.Models.Operations;
 using Microsoft.Health.Operations;
 
@@ -55,5 +55,5 @@ public interface IDicomOperationsClient
     Task<Guid> StartReindexingInstancesAsync(IReadOnlyCollection<int> tagKeys, CancellationToken cancellationToken = default);
 
 
-    Task<Guid> StartExportAsync(ExportOperationInput input, CancellationToken cancellationToken = default);
+    Task<Guid> StartExportAsync(ExportInput input, CancellationToken cancellationToken = default);
 }

@@ -3,19 +3,17 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Health.Dicom.Core.Features.Model;
 
-namespace Microsoft.Health.Dicom.Core.Features.Common;
+namespace Microsoft.Health.Dicom.Blob.Features.Storage;
 
-public interface IFileCopyStore
+public interface IBlobCopyStore : IDisposable
 {
-    /// <summary>
-    /// Async copy file from source to a destination target
-    /// </summary>
-    /// <param name="instanceIdentifier"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task CopyFileAsync(VersionedInstanceIdentifier instanceIdentifier, CancellationToken cancellationToken = default);
+    Task AppendErrorLogAsync(Stream content, CancellationToken cancellationToken);
+    Task CopyFileAsync(VersionedInstanceIdentifier instanceIdentifier, CancellationToken cancellationToken);
+    Task<Uri> GetErrorHrefAsync(CancellationToken cancellationToken);
 }

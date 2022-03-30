@@ -4,6 +4,8 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Health.Dicom.Core.Features.Model;
 
@@ -11,7 +13,9 @@ namespace Microsoft.Health.Dicom.Core.Features.Export;
 
 public interface IExportSink
 {
-    Task CopyAsync(VersionedInstanceIdentifier source);
+    Task<Uri> GetErrorHrefAsync(CancellationToken cancellationToken = default);
 
-    Task AppendErrorAsync(VersionedInstanceIdentifier source, Exception exception);
+    Task CopyAsync(VersionedInstanceIdentifier source, CancellationToken cancellationToken = default);
+
+    Task AppendErrorAsync(Stream errorContent, CancellationToken cancellationToken = default);
 }

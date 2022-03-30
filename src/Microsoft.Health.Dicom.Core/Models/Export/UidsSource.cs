@@ -5,19 +5,8 @@
 
 using System.Collections.Generic;
 
-namespace Microsoft.Health.Dicom.Functions.Linq;
-
-internal static class Enumerate
+namespace Microsoft.Health.Dicom.Core.Models.Export;
+public class UidsSource
 {
-    public static IEnumerable<long> Range(long start, int count)
-        => Range(start, count, 1);
-
-    public static IEnumerable<long> Range(long start, int count, long step)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            yield return start;
-            start += step;
-        }
-    }
+    public IReadOnlyList<string> Uids { get; set; }
 }

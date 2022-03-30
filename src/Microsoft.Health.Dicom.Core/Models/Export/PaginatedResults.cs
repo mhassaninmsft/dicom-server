@@ -3,13 +3,11 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-using Microsoft.Health.Dicom.Core.Models.Export;
+namespace Microsoft.Health.Dicom.Core.Models.Export;
 
-namespace Microsoft.Health.Dicom.Core.Features.Export;
-
-public interface IExportSinkFactory
+public class PaginatedResults<T>
 {
-    IExportSink CreateSink(ExportLocation location);
+    public T Result { get; init; }
 
-    void Validate(ExportLocation location);
+    public ContinuationToken? ContinuationToken { get; init; }
 }
