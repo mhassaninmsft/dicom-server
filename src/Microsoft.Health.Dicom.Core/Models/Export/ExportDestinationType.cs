@@ -3,11 +3,10 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-namespace Microsoft.Health.Dicom.Core.Features.Export;
+namespace Microsoft.Health.Dicom.Core.Models.Export;
 
-public class ExportSinkDescription
+public enum ExportDestinationType
 {
-    public string Name { get; set; }
-
-    public object Options { get; set; }
+    Unknown,
+    AzureBlob,
 }

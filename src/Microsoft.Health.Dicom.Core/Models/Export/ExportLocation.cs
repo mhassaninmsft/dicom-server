@@ -3,15 +3,13 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-using System;
-using System.Threading.Tasks;
-using Microsoft.Health.Dicom.Core.Features.Model;
+using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Health.Dicom.Core.Features.Export;
+namespace Microsoft.Health.Dicom.Core.Models.Export;
 
-public interface IExportSink
+public class ExportLocation
 {
-    Task CopyAsync(VersionedInstanceIdentifier source);
+    public ExportDestinationType Type { get; set; }
 
-    Task AppendErrorAsync(VersionedInstanceIdentifier source, Exception exception);
+    public IConfiguration Configuration { get; set; }
 }
