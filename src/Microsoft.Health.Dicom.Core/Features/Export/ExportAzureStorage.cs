@@ -9,4 +9,6 @@ public class ExportAzureStorage
     public string StorageAccountName { get; set; }
 
     public string StorageContainerName { get; set; }
+
+    public string SasToken { get; set; }
 }

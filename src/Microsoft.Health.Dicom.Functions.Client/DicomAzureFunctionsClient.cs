@@ -111,6 +111,7 @@ internal class DicomAzureFunctionsClient : IDicomOperationsClient
         // Start the re-indexing orchestration
         Guid operationId = _guidFactory.Create();
 
+
         // TODO: Pass token when supported
         string instanceId = await _durableClient.StartNewAsync(
             FunctionNames.ReindexInstances,

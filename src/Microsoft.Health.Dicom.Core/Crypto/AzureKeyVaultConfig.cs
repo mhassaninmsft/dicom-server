@@ -3,9 +3,10 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-
-namespace Microsoft.Health.Dicom.Core.Features.Export.Model;
-public readonly record struct Instance(string StudyId, string SeriesId, string InstanceId);
-public readonly record struct Series(string StudyId, string SeriesId);
-public readonly record struct Study(string StudyId);
-
+using System;
+namespace Microsoft.Health.Dicom.Core.Crypto;
+public class AzureKeyVaultConfig
+{
+    public Uri KeyVaultUri { get; set; }
+    public string KeyName { get; set; }
+}
