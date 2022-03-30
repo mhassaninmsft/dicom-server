@@ -30,7 +30,7 @@ public class AzureKeyVaultCryptoServiceTests
         var keyVaultConfigOptions = Options.Create(keyVaultConfig);
         var tenantID = "88f738c6-baab-45a8-b695-ee3cadd61660";
         var clientID = "82887e4c-cb3f-465a-aab9-bbbee719a2f1";
-        var clientSecret = "-GY7Q~i7bsCWj~j6kP5KzJKu~RjXsDL5JI_fb";
+        var clientSecret = "";
         var clientSecretCredential = new ClientSecretCredential(tenantID, clientID, clientSecret);
         ICryptoService cryptoService = new AzureKeyVaultCryptoService(logger, keyVaultConfigOptions, clientSecretCredential);
         var secretString = "This is a seceret2";

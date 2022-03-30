@@ -6,7 +6,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Health.Dicom.Core.Messages.Export;
-using Microsoft.Health.Dicom.Core.Models.Export;
+//using Microsoft.Health.Dicom.Core.Models.Export;
 
 namespace Microsoft.Health.Dicom.Core.Features.Export;
 
@@ -18,5 +18,5 @@ public interface IExportService
     /// <param name="exportInput">The export input.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>The response.</returns>
-    public Task<ExportResponse> ExportAsync(ExportInput exportInput, CancellationToken cancellationToken = default);
+    public Task<ExportResponse> ExportAsync(Microsoft.Health.Dicom.Core.Models.Export.ExportInput exportInput, CancellationToken cancellationToken = default);
 }

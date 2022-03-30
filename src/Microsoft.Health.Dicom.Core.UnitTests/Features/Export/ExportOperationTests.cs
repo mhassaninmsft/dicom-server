@@ -6,7 +6,7 @@
 using System;
 using Microsoft.Health.Dicom.Core.Features.Export;
 using Microsoft.Health.Dicom.Core.Features.Export.Model;
-using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
+//using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Xunit;
 using Xunit.Abstractions;
 
