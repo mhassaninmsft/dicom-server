@@ -6,6 +6,6 @@ using System;
 namespace Microsoft.Health.Dicom.Core.Features.Crypto;
 public class AzureKeyVaultConfig
 {
-    public Uri KeyVaultUri { get; set; }
+    public Uri VaultUri { get; set; }
     public string KeyName { get; set; }
 }

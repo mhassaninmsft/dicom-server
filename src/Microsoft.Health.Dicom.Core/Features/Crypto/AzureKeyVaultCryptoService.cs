@@ -32,7 +32,7 @@ public class AzureKeyVaultCryptoService : ICryptoService
         _tokenCredential = keyVaultTokenCredential;
         _azureKeyVaultConfig = keyVaultConfig.Value;
 
-        var vaultClient = new KeyClient(_azureKeyVaultConfig.KeyVaultUri, _tokenCredential);
+        var vaultClient = new KeyClient(_azureKeyVaultConfig.VaultUri, _tokenCredential);
         var key = vaultClient.GetKeyAsync(_azureKeyVaultConfig.KeyName).Result.Value;
         var cryptoClient = new CryptographyClient(key.Id, keyVaultTokenCredential);
         _cryptographyClient = cryptoClient;

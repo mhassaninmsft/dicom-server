@@ -26,7 +26,7 @@ public class AzureKeyVaultCryptoServiceTests
     public async Task TestBaseWorkflow()
     {
         var logger = Substitute.For<ILogger<AzureKeyVaultCryptoService>>();
-        var keyVaultConfig = new AzureKeyVaultConfig() { KeyName = "mynewkey", KeyVaultUri = new Uri("https://dicomkeyvault1.vault.azure.net/") };
+        var keyVaultConfig = new AzureKeyVaultConfig() { KeyName = "mynewkey", VaultUri = new Uri("https://dicomkeyvault1.vault.azure.net/") };
         var keyVaultConfigOptions = Options.Create(keyVaultConfig);
         var tenantID = "88f738c6-baab-45a8-b695-ee3cadd61660";
         var clientID = "82887e4c-cb3f-465a-aab9-bbbee719a2f1";
