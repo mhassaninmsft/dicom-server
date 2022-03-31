@@ -9,9 +9,9 @@ namespace Microsoft.Health.Dicom.Core.Models.Export;
 
 public class ExportInput
 {
-    public DataSource Source { get; set; }
+    public SourceManifest Manifest { get; set; }
 
-    public ExportLocation Destination { get; set; }
+    public ExportDestination Destination { get; set; }
 
     public BatchOptions Batching { get; set; }
 }

@@ -3,12 +3,15 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
+using EnsureThat;
+using Microsoft.Health.Operations;
 
-namespace Microsoft.Health.Dicom.Core.Features.Export;
-public class ExportSeries
+namespace Microsoft.Health.Dicom.Core.Messages.Export;
+
+public class ExportIdentifiersResponse
 {
-    public string StudyUid { get; set; }
+    public ExportIdentifiersResponse(OperationReference operationReference)
+        => Operation = EnsureArg.IsNotNull(operationReference);
 
-    public IReadOnlyList<string> SeriesUids { get; set; }
+    public OperationReference Operation { get; }
 }

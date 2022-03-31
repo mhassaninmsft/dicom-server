@@ -3,15 +3,16 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.Health.Dicom.Core.Features.Model;
 using Microsoft.Health.Dicom.Core.Models.Export;
 
 namespace Microsoft.Health.Dicom.Core.Features.Export;
 
-public interface IExportSource
+public interface IExportSource : IAsyncEnumerable<VersionedInstanceIdentifier>, IAsyncDisposable
 {
-    PaginatedResults<IReadOnlyCollection<long>> GetBatchOffsets(int size, ContinuationToken continuationToken = default);
+    SourceManifest Manifest { get; }
 
-    Task<IExportBatch> GetBatchAsync(long offset);
+    SourceManifest TakeNextBatch(int size);
 }

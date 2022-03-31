@@ -3,17 +3,13 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-using EnsureThat;
-using Microsoft.Health.Operations;
+using System.Collections.Generic;
 
-namespace Microsoft.Health.Dicom.Core.Messages.Export;
+namespace Microsoft.Health.Dicom.Core.Models.Export;
 
-public class ExportResponse
+public class ExportDestination
 {
-    public ExportResponse(OperationReference operationReference)
-    {
-        Operation = EnsureArg.IsNotNull(operationReference);
-    }
+    public ExportDestinationType Type { get; set; }
 
-    public OperationReference Operation { get; }
+    public IReadOnlyDictionary<string, string> Configuration { get; set; }
 }
