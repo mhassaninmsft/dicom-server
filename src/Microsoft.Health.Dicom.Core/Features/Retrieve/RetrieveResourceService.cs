@@ -20,6 +20,7 @@ using Microsoft.Health.Dicom.Core.Features.Context;
 using Microsoft.Health.Dicom.Core.Features.Model;
 using Microsoft.Health.Dicom.Core.Messages;
 using Microsoft.Health.Dicom.Core.Messages.Retrieve;
+using Microsoft.Health.Dicom.Core.Web;
 
 namespace Microsoft.Health.Dicom.Core.Features.Retrieve;
 

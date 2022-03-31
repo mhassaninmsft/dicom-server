@@ -6,7 +6,7 @@
 using System;
 using EnsureThat;
 
-namespace Microsoft.Health.Dicom.Core.Features.Workitem;
+namespace Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 public class WorkitemInstanceIdentifier
 {

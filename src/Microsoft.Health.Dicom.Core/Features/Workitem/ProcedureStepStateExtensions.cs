@@ -7,6 +7,7 @@ using System;
 using System.Globalization;
 using EnsureThat;
 using FellowOakDicom;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem;
 

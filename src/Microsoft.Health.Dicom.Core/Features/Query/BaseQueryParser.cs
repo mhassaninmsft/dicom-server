@@ -9,6 +9,7 @@ using System.Net;
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 
 namespace Microsoft.Health.Dicom.Core.Features.Query;
 

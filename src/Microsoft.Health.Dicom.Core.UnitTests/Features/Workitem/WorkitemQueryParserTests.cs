@@ -13,10 +13,12 @@ using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Core.UnitTests.Features.Query;
+namespace Microsoft.Health.Dicom.Core.UnitTests.Features.Workitem;
 
 public class WorkitemQueryParserTests
 {
@@ -110,7 +112,7 @@ public class WorkitemQueryParserTests
     {
         EnsureArg.IsNotNull(minValue, nameof(minValue));
         EnsureArg.IsNotNull(maxValue, nameof(maxValue));
-        QueryTag queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
+        var queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
 
         BaseQueryExpression BaseQueryExpression = _queryParser.Parse(CreateParameters(GetSingleton("00404005", string.Concat(minValue, "-", maxValue))), new[] { queryTag });
         var cond = BaseQueryExpression.FilterConditions.First() as DateRangeValueMatchCondition;
@@ -127,7 +129,7 @@ public class WorkitemQueryParserTests
     {
         EnsureArg.IsNotNull(minValue, nameof(minValue));
         EnsureArg.IsNotNull(maxValue, nameof(maxValue));
-        QueryTag queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
+        var queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
 
         BaseQueryExpression BaseQueryExpression = _queryParser.Parse(CreateParameters(GetSingleton("00404005", string.Concat(minValue, "-", maxValue))), new[] { queryTag });
         var cond = BaseQueryExpression.FilterConditions.First() as DateRangeValueMatchCondition;
@@ -143,7 +145,7 @@ public class WorkitemQueryParserTests
     [Fact]
     public void GivenDateTime_WithEmptyMinAndMaxInRangeMatch_Throw()
     {
-        QueryTag queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
+        var queryTag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404005", 1, "DT"));
         Assert.Throws<QueryParseException>(() => _queryParser
             .Parse(CreateParameters(GetSingleton("DateTime", "-")), new[] { queryTag }));
     }
@@ -193,7 +195,7 @@ public class WorkitemQueryParserTests
                             DicomTag.AccessionNumber, "Foo"),
                             new DicomShortString(
                             DicomTag.RequestedProcedureID, "Bar"))});
-        QueryTag[] tags = new QueryTag[]
+        var tags = new QueryTag[]
         {
           new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("0040A370.00080050", 1, item.ValueRepresentation.Code))
         };
@@ -221,7 +223,7 @@ public class WorkitemQueryParserTests
                             new DicomShortString(
                             DicomTag.CodeValue, "Bar"))});
 
-        QueryTag[] tags = new QueryTag[]
+        var tags = new QueryTag[]
         {
           new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404025.00080100", 1, item1.ValueRepresentation.Code)),
           new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00404026.00080100", 2, item2.ValueRepresentation.Code))

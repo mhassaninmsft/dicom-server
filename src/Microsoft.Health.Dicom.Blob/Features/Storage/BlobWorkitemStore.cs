@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.Health.Blob.Configs;
 using Microsoft.Health.Dicom.Core.Exceptions;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using Microsoft.Health.Dicom.Core.Web;
 using Microsoft.IO;
 

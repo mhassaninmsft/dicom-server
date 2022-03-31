@@ -6,8 +6,9 @@
 using System;
 using System.Text.Json;
 using EnsureThat;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Health.Dicom.Api.Registration;
 
 internal static class JsonMvcBuilderExtensions
 {

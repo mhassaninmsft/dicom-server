@@ -5,6 +5,7 @@
 
 using EnsureThat;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Blob.Configs;
 using Microsoft.Health.Blob.Features.Health;
 using Microsoft.Health.Dicom.Blob.Features.Health;
@@ -15,7 +16,7 @@ using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.Core.Registration;
 using Microsoft.Health.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Health.Dicom.Blob.Registration;
 
 public static class DicomServerBuilderBlobRegistrationExtensions
 {

@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
-using Microsoft.Health.Dicom.Features.Common;
+using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.SqlServer.Exceptions;
 
 namespace Microsoft.Health.Dicom.SqlServer.Features.Schema;

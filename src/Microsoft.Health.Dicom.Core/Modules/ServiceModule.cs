@@ -6,6 +6,7 @@
 using EnsureThat;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Dicom.Core.Configs;
+using Microsoft.Health.Dicom.Core.Crypto;
 using Microsoft.Health.Dicom.Core.Features.ChangeFeed;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.Delete;
@@ -22,6 +23,7 @@ using Microsoft.Health.Dicom.Core.Features.Store;
 using Microsoft.Health.Dicom.Core.Features.Store.Entries;
 using Microsoft.Health.Dicom.Core.Features.Validation;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Registration;
 using Microsoft.Health.Extensions.DependencyInjection;
 
 namespace Microsoft.Health.Dicom.Core.Modules;
@@ -219,6 +221,18 @@ public class ServiceModule : IStartupModule
         if (_featureConfiguration.EnableExport)
         {
             services.Add<ExportService>()
+                .Scoped()
+                .AsSelf()
+                .AsImplementedInterfaces();
+        }
+
+        if (_featureConfiguration.EnableKeyVaultStore)
+        {
+            //services.Add<ExportService>()
+            //    .Scoped()
+            //    .AsSelf()
+            //    .AsImplementedInterfaces();
+            services.Add<AzureKeyVaultCryptoService>()
                 .Scoped()
                 .AsSelf()
                 .AsImplementedInterfaces();

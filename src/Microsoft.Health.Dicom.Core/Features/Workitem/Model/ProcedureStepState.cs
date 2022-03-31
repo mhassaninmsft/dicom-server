@@ -5,7 +5,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace Microsoft.Health.Dicom.Core.Features.Workitem;
+namespace Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 /// <summary>
 /// Representing the Procedure Step State.

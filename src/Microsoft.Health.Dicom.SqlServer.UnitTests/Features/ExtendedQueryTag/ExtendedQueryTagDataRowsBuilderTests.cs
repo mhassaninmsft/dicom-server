@@ -6,7 +6,8 @@
 using System.Collections.Generic;
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
-using Microsoft.Health.Dicom.Core.Features.Workitem;
+//using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using Microsoft.Health.Dicom.SqlServer.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.SqlServer.Features.Schema;
 using Microsoft.Health.Dicom.SqlServer.Features.Schema.Model;

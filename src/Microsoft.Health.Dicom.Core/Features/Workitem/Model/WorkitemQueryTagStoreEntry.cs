@@ -8,7 +8,7 @@ using EnsureThat;
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 
-namespace Microsoft.Health.Dicom.Core.Features.Workitem;
+namespace Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 /// <summary>
 /// Represent each workitem query tag entry has retrieved from the store.

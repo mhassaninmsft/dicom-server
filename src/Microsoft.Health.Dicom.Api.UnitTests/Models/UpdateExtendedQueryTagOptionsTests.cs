@@ -6,9 +6,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using Microsoft.Health.Dicom.Api.Models;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Api.Models;
+namespace Microsoft.Health.Dicom.Api.UnitTests.Models;
 
 public class UpdateExtendedQueryTagOptionsTests
 {

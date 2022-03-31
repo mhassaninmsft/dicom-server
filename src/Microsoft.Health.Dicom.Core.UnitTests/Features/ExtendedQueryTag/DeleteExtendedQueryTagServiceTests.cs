@@ -13,7 +13,7 @@ using Microsoft.Health.Dicom.Tests.Common.Extensions;
 using NSubstitute;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Core.UnitTests.Features.ChangeFeed;
+namespace Microsoft.Health.Dicom.Core.UnitTests.Features.ExtendedQueryTag;
 
 public class DeleteExtendedQueryTagServiceTests
 {

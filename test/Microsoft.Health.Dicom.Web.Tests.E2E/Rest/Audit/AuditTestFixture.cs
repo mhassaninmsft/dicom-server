@@ -5,6 +5,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Dicom.Api.Features.Audit;
+using Microsoft.Health.Dicom.Web.Tests.E2E.Common;
 
 namespace Microsoft.Health.Dicom.Web.Tests.E2E.Rest.Audit;
 

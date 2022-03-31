@@ -5,15 +5,17 @@
 
 using EnsureThat;
 using FellowOakDicom;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Health.Api.Registration;
 using Microsoft.Health.Dicom.Api.Features.Routing;
+using Microsoft.Health.Dicom.Api.Features.Security;
 using Microsoft.Health.Dicom.Core.Configs;
 
-namespace Microsoft.AspNetCore.Builder;
+namespace Microsoft.Health.Dicom.Api.Registration;
 
 public static class DicomServerApplicationBuilderExtensions
 {

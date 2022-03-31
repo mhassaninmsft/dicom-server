@@ -18,9 +18,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Health.Development.IdentityProvider.Registration;
-using Microsoft.Health.Dicom.Web.Tests.E2E.Common;
 
-namespace Microsoft.Health.Dicom.Web.Tests.E2E;
+namespace Microsoft.Health.Dicom.Web.Tests.E2E.Common;
 
 /// <summary>
 /// A <see cref="TestDicomWebServer"/> that runs the Dicom server in-process with IdentityServer

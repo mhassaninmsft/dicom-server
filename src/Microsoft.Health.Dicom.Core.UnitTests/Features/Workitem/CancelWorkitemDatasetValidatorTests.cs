@@ -6,6 +6,7 @@
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.Store;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using Microsoft.Health.Dicom.Tests.Common;
 using Xunit;
 

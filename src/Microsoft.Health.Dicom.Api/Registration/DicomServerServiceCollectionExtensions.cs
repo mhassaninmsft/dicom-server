@@ -6,6 +6,7 @@
 using System;
 using System.Reflection;
 using EnsureThat;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -23,6 +24,7 @@ using Microsoft.Health.Api.Modules;
 using Microsoft.Health.Dicom.Api.Configs;
 using Microsoft.Health.Dicom.Api.Features.BackgroundServices;
 using Microsoft.Health.Dicom.Api.Features.Context;
+using Microsoft.Health.Dicom.Api.Features.Exceptions;
 using Microsoft.Health.Dicom.Api.Features.Partition;
 using Microsoft.Health.Dicom.Api.Features.Routing;
 using Microsoft.Health.Dicom.Api.Features.Swagger;
@@ -34,7 +36,7 @@ using Microsoft.Health.Extensions.DependencyInjection;
 using Microsoft.IO;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Microsoft.AspNetCore.Builder;
+namespace Microsoft.Health.Dicom.Api.Registration;
 
 public static class DicomServerServiceCollectionExtensions
 {
@@ -181,17 +183,20 @@ public static class DicomServerServiceCollectionExtensions
                     app.UseDeveloperExceptionPage();
                     app.UseSwagger(c =>
                     {
-                        c.RouteTemplate = "{documentName}/api.{json|yaml}";
+                        //c.RouteTemplate = "{documentName}/api.{json|yaml}";
                     });
 
                     //Disabling swagger ui until accesability team gets back to us
-                    //app.UseSwaggerUI(options =>
-                    //{
-                    //    foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
-                    //    {
-                    //        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.yaml", description.GroupName.ToUpperInvariant());
-                    //    }
-                    //});
+                    app.UseSwaggerUI(options =>
+                    {
+                        foreach (ApiVersionDescription description in provider.ApiVersionDescriptions)
+                        {
+                            //options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.yaml", description.GroupName.ToUpperInvariant());
+                            var endpoint = $"/swagger/{description.GroupName}/swagger.yaml";
+                            Console.WriteLine($"endpoint is ${endpoint}");
+                            options.SwaggerEndpoint(endpoint, description.GroupName.ToUpperInvariant());
+                        }
+                    });
                 }
 
                 app.UseAudit();

@@ -11,10 +11,12 @@ using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Extensions;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
+using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
-using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
-namespace Microsoft.Health.Dicom.Core.Features.Query;
+namespace Microsoft.Health.Dicom.Core.Features.Workitem;
 
 /// <summary>
 /// Main parser class that converts uri query parameters to sql ready query expresions for workitem search request
@@ -111,7 +113,7 @@ public class WorkitemQueryParser : BaseQueryParser<BaseQueryExpression, BaseQuer
 
         QueryTag queryTag = queryTags.FirstOrDefault(item =>
         {
-            return Enumerable.SequenceEqual(dicomTags, item.WorkitemQueryTagStoreEntry.PathTags);
+            return dicomTags.SequenceEqual(item.WorkitemQueryTagStoreEntry.PathTags);
         });
 
         if (queryTag == null)

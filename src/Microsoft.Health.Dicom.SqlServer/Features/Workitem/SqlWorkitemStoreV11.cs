@@ -16,7 +16,7 @@ using Microsoft.Health.Dicom.Core;
 using Microsoft.Health.Dicom.Core.Exceptions;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
-using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using Microsoft.Health.Dicom.Core.Models;
 using Microsoft.Health.Dicom.SqlServer.Extensions;
 using Microsoft.Health.Dicom.SqlServer.Features.ExtendedQueryTag;

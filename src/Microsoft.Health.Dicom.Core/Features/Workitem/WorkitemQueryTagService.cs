@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Health.Dicom.Core.Exceptions;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
-using Microsoft.Health.Dicom.Features.Common;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem;
 

@@ -12,6 +12,7 @@ using FellowOakDicom;
 using FellowOakDicom.Imaging;
 using FellowOakDicom.IO.Buffer;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 namespace Microsoft.Health.Dicom.Tests.Common;
 

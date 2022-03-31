@@ -6,8 +6,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Development.IdentityProvider.Registration;
+using Microsoft.Health.Dicom.Api.Registration;
+using Microsoft.Health.Dicom.Blob.Registration;
+using Microsoft.Health.Dicom.Core.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Security;
-using Microsoft.Health.Dicom.Functions.Client;
+using Microsoft.Health.Dicom.Functions.Client.Registration;
+using Microsoft.Health.Dicom.SqlServer.Registration;
 
 namespace Microsoft.Health.Dicom.Web;
 
@@ -34,6 +38,7 @@ public class Startup
         // need to ensure that the schema is initialized before the background workers are started.
         services.AddDicomServer(Configuration)
             .AddBlobDataStores(Configuration)
+            .AddAzureKeyVault(Configuration)
             .AddSqlServer(Configuration)
             .AddAzureFunctionsClient(Configuration)
             .AddBackgroundWorkers()

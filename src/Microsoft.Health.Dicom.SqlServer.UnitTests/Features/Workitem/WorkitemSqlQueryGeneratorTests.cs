@@ -12,13 +12,14 @@ using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Partition;
 using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 using Microsoft.Health.Dicom.SqlServer.Features.Workitem;
 using Microsoft.Health.Dicom.Tests.Common.Extensions;
 using Microsoft.Health.SqlServer;
 using Microsoft.Health.SqlServer.Features.Storage;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.SqlServer.UnitTests.Features.Query;
+namespace Microsoft.Health.Dicom.SqlServer.UnitTests.Features.Workitem;
 
 public class WorkitemSqlQueryGeneratorTests
 {
@@ -31,7 +32,7 @@ public class WorkitemSqlQueryGeneratorTests
         var includeField = new QueryIncludeField(new List<DicomTag>());
         var item = new DicomAgeString(
                  DicomTag.PatientName, "Foo");
-        QueryTag queryTag = new QueryTag(DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00100010", 1, item.ValueRepresentation.Code));
+        var queryTag = new QueryTag(DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("00100010", 1, item.ValueRepresentation.Code));
         var filter = new StringSingleValueMatchCondition(queryTag, "Foo");
         filter.QueryTag = queryTag;
         var filters = new List<QueryFilterCondition>()

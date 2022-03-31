@@ -14,6 +14,7 @@ using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask.ContextImplementations;
 using Microsoft.Extensions.Logging;
 using Microsoft.Health.Dicom.Core.Exceptions;
+//using Microsoft.Health.Dicom.Core.Features.Export;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Operations;
 using Microsoft.Health.Dicom.Core.Features.Routing;
@@ -110,6 +111,7 @@ internal class DicomAzureFunctionsClient : IDicomOperationsClient
 
         // Start the re-indexing orchestration
         Guid operationId = _guidFactory.Create();
+
 
         // TODO: Pass token when supported
         string instanceId = await _durableClient.StartNewAsync(

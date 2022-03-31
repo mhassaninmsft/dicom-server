@@ -5,7 +5,6 @@
 
 using Microsoft.Extensions.Primitives;
 using Microsoft.Health.Dicom.Api.Extensions;
-using Microsoft.Health.Dicom.Core;
 using Microsoft.Health.Dicom.Core.Features.Retrieve;
 using Microsoft.Health.Dicom.Core.Messages.Retrieve;
 using Microsoft.Health.Dicom.Core.Web;

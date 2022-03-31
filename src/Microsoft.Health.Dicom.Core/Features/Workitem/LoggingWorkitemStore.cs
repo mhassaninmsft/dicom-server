@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FellowOakDicom;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem;
 

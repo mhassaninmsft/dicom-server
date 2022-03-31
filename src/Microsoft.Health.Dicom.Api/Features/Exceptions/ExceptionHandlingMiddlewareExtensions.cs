@@ -4,9 +4,9 @@
 // -------------------------------------------------------------------------------------------------
 
 using EnsureThat;
-using Microsoft.Health.Dicom.Api.Features.Exceptions;
+using Microsoft.AspNetCore.Builder;
 
-namespace Microsoft.AspNetCore.Builder;
+namespace Microsoft.Health.Dicom.Api.Features.Exceptions;
 
 public static class ExceptionHandlingMiddlewareExtensions
 {
