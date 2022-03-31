@@ -36,4 +36,9 @@ public class FeatureConfiguration
     /// Enables Export feature.
     /// </summary>
     public bool EnableExport { get; set; }
+
+    /// <summary>
+    /// Enables The use of an Azure Key Vault to store secrets or to sign/verify secrets
+    /// </summary>
+    public bool EnableKeyVaultStore { get; set; }
 }
