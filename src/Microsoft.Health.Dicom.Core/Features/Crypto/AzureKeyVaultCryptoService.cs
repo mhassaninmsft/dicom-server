@@ -50,7 +50,7 @@ public class AzureKeyVaultCryptoService : ISecretService
 
     private static DateTimeOffset GetExpiryTime()
     {
-        return new DateTimeOffset(DateTime.Now, TimeSpan.FromHours(SecretStorageDurationHours));
+        return new DateTimeOffset(DateTime.Now + TimeSpan.FromHours(SecretStorageDurationHours));
     }
     public async Task<SecretRepresntation> StoreSecret(string secretName, string secretValue)
     {
