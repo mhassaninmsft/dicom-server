@@ -10,19 +10,22 @@
 using System.Threading.Tasks;
 using Azure.Core;
 //using Azure.Identity;
-using Azure.Security.KeyVault.Keys;
-using Azure.Security.KeyVault.Keys.Cryptography;
+using Azure.Security.KeyVault.Secrets;
 using EnsureThat;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 
 namespace Microsoft.Health.Dicom.Core.Features.Crypto;
-public class AzureKeyVaultCryptoService : ICryptoService
+public class AzureKeyVaultCryptoService : ISecretService
 {
+    // Constant for now, TODO, change via either a constructor and use DI
+    private const int SecretStorageDurationHours = 48; // 2 days
     private readonly ILogger<AzureKeyVaultCryptoService> _logger;
     private readonly TokenCredential _tokenCredential;
-    private readonly CryptographyClient _cryptographyClient;
+    //private readonly CryptographyClient _cryptographyClient;
     private readonly AzureKeyVaultConfig _azureKeyVaultConfig;
+    private readonly SecretClient _secretClient;
     public AzureKeyVaultCryptoService(ILogger<AzureKeyVaultCryptoService> logger, IOptions<AzureKeyVaultConfig> keyVaultConfig, TokenCredential keyVaultTokenCredential)
     {
         EnsureArg.IsNotNull(logger, nameof(logger));
@@ -32,22 +35,30 @@ public class AzureKeyVaultCryptoService : ICryptoService
         _tokenCredential = keyVaultTokenCredential;
         _azureKeyVaultConfig = keyVaultConfig.Value;
 
-        var vaultClient = new KeyClient(_azureKeyVaultConfig.VaultUri, _tokenCredential);
-        var key = vaultClient.GetKeyAsync(_azureKeyVaultConfig.KeyName).Result.Value;
-        var cryptoClient = new CryptographyClient(key.Id, keyVaultTokenCredential);
-        _cryptographyClient = cryptoClient;
-
+        // for storing secrets
+        var secretClient = new SecretClient(_azureKeyVaultConfig.VaultUri, keyVaultTokenCredential);
+        _secretClient = secretClient;
     }
 
-    public async Task<byte[]> Decrypt(byte[] data)
+
+
+    public async Task<string> GetSecret(string secretName)
     {
-        DecryptResult decryptResult = await _cryptographyClient.DecryptAsync(EncryptionAlgorithm.RsaOaep, data);
-        return decryptResult.Plaintext;
+        var secretValue = await _secretClient.GetSecretAsync(secretName);
+        return secretValue.Value.Value;
     }
 
-    public async Task<byte[]> Encrypt(byte[] data)
+    private static DateTimeOffset GetExpiryTime()
     {
-        EncryptResult encryptResult = await _cryptographyClient.EncryptAsync(EncryptionAlgorithm.RsaOaep, data);
-        return encryptResult.Ciphertext;
+        return new DateTimeOffset(DateTime.Now, TimeSpan.FromHours(SecretStorageDurationHours));
+    }
+    public async Task<SecretRepresntation> StoreSecret(string secretName, string secretValue)
+    {
+        KeyVaultSecret secretObject = new KeyVaultSecret(secretName, secretValue);
+        var expiryTime = GetExpiryTime();
+        secretObject.Properties.ExpiresOn = expiryTime;
+        var keyVaultSecret = (await _secretClient.SetSecretAsync(secretName, secretValue)).Value;
+        var result = new SecretRepresntation() { ExpiryTime = expiryTime, SecretName = secretName, SecretId = keyVaultSecret.Id.ToString() };
+        return result;
     }
 }

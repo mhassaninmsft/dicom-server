@@ -26,18 +26,17 @@ public class AzureKeyVaultCryptoServiceTests
     public async Task TestBaseWorkflow()
     {
         var logger = Substitute.For<ILogger<AzureKeyVaultCryptoService>>();
-        var keyVaultConfig = new AzureKeyVaultConfig() { KeyName = "mynewkey", VaultUri = new Uri("https://dicomkeyvault1.vault.azure.net/") };
+        var keyVaultConfig = new AzureKeyVaultConfig() { VaultUri = new Uri("https://dicomkeyvault1.vault.azure.net/") };
         var keyVaultConfigOptions = Options.Create(keyVaultConfig);
         var tenantID = "88f738c6-baab-45a8-b695-ee3cadd61660";
         var clientID = "82887e4c-cb3f-465a-aab9-bbbee719a2f1";
-        var clientSecret = "-GY7Q~i7bsCWj~j6kP5KzJKu~RjXsDL5JI_fb";
+        var clientSecret = "";
         var clientSecretCredential = new ClientSecretCredential(tenantID, clientID, clientSecret);
-        ICryptoService cryptoService = new AzureKeyVaultCryptoService(logger, keyVaultConfigOptions, clientSecretCredential);
+        ISecretService secretService = new AzureKeyVaultCryptoService(logger, keyVaultConfigOptions, clientSecretCredential);
         var secretString = "This is a seceret2";
-        var encryptedString = await cryptoService.EncryptString(secretString);
-        var plainString = await cryptoService.DecryptString(encryptedString);
-        _output.WriteLine(plainString);
-        _output.WriteLine(encryptedString);
-        Assert.Equal(secretString, plainString);
+        var secretName = "mySuperSecret";
+        var secret = await secretService.StoreSecret(secretName, secretString);
+        var plainSecret = await secretService.GetSecret(secretName);
+        Assert.Equal(plainSecret, secretString);
     }
 }

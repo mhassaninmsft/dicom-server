@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <Description>Common primitives and utilities used by Microsoft's DICOMweb APIs.</Description>
@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.5.0" />
     <PackageReference Include="Azure.Security.KeyVault.Keys" Version="4.3.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.3.0" />
     <PackageReference Include="Ensure.That" Version="10.1.0" />
     <PackageReference Include="fo-dicom" Version="$(FoDicomVersion)" />
     <PackageReference Include="fo-dicom.Codecs" Version="5.1.0" />

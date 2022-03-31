@@ -4,9 +4,12 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
+using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Operations;
 using Microsoft.Health.Dicom.Core.Features.Routing;
 using Microsoft.Health.Dicom.Core.Messages.Export;
@@ -21,17 +24,20 @@ public class ExportService : IExportService
     private readonly ExportSinkFactory _sinkFactory;
     private readonly IDicomOperationsClient _client;
     private readonly IUrlResolver _uriResolver;
+    private readonly ISecretService _secretService;
 
     public ExportService(
         ExportSourceFactory sourceFactory,
         ExportSinkFactory sinkFactory,
         IDicomOperationsClient client,
-        IUrlResolver uriResolver)
+        IUrlResolver uriResolver,
+        ISecretService secretService)
     {
         _sourceFactory = EnsureArg.IsNotNull(sourceFactory, nameof(sourceFactory));
         _sinkFactory = EnsureArg.IsNotNull(sinkFactory, nameof(sinkFactory));
         _client = EnsureArg.IsNotNull(client, nameof(client));
         _uriResolver = EnsureArg.IsNotNull(uriResolver, nameof(uriResolver));
+        _secretService = EnsureArg.IsNotNull(secretService, nameof(secretService));
     }
 
     /// <summary>
@@ -43,6 +49,18 @@ public class ExportService : IExportService
     public async Task<ExportIdentifiersResponse> StartExportingIdentifiersAsync(ExportIdentifiersInput input, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(input, nameof(input));
+        var sasTokenKey = "ContainerSasUri";
+        string containerSasUri;
+        if (input.Destination.Configuration.TryGetValue(sasTokenKey, out containerSasUri))
+        {
+            //TODO: Can we choose the operation ID apriori here
+            var secretName = Guid.NewGuid().ToString();
+            var secret = await _secretService.StoreSecret(secretName, containerSasUri);
+            Dictionary<string, string> updatedDictionary = input.Destination.Configuration.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+            // The SasURI serialzies  is represented as a `System.Uri` there could be a problem when deserializng a plain string instead
+            updatedDictionary[containerSasUri] = secret.SecretName;
+            input.Destination.Configuration = updatedDictionary;
+        }
 
         OperationReference operation = await StartExportAsync(
             new ExportInput
