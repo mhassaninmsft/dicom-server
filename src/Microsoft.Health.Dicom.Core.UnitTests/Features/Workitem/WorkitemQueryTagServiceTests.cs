@@ -9,10 +9,11 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 using NSubstitute;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Core.UnitTests.Features.ExtendedQueryTag;
+namespace Microsoft.Health.Dicom.Core.UnitTests.Features.Workitem;
 
 public class WorkitemQueryTagServiceTests
 {

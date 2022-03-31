@@ -9,6 +9,9 @@ using EnsureThat;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Health.Dicom.Core.Registration;
 using Microsoft.Extensions.DependencyInjection;
+using Azure.Identity;
+using Azure.Core;
+
 namespace Microsoft.Health.Dicom.Core.Crypto;
 public static class AzureKeyVaultRegistration
 {
@@ -26,14 +29,22 @@ public static class AzureKeyVaultRegistration
         var useServicePrincipal = true;
         if (useServicePrincipal)
         {
-            serverBuilder.Services.AddOptions<AzureKeyVaultConfig>().
-           Bind(configuration.GetSection("AzureKeyVault"), binderOptions =>
-           {
-               binderOptions.ErrorOnUnknownConfiguration = true;
-           });
+            // serverBuilder.Services.AddOptions<AzureServicePrincipalCredentials>().
+            //Bind(configuration.GetSection("AzureServicePrincipalCredentials"), binderOptions =>
+            //{
+            //    binderOptions.ErrorOnUnknownConfiguration = true;
+            //});
+            // var section = configuration.GetSection("AzureServicePrincipalCredentials");
+
+            var azspcreds = new AzureServicePrincipalCredentials();
+            configuration.GetSection("AzureServicePrincipalCredentials").Bind(azspcreds);
+
+            serverBuilder.Services.AddSingleton<TokenCredential>(new ClientSecretCredential(azspcreds.TenantId, azspcreds.ClientId, azspcreds.ClientSecret));
         }
         else
         {
+            //use the Managed Identity default implemnation (must be running in an Enviornemnt that has permission to talk to the Keyvault
+            serverBuilder.Services.AddSingleton<TokenCredential>(new DefaultAzureCredential());
 
         }
         return serverBuilder;

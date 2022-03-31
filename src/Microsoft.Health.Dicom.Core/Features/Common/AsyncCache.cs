@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
 
-namespace Microsoft.Health.Dicom.Features.Common;
+namespace Microsoft.Health.Dicom.Core.Features.Common;
 
 public class AsyncCache<T> : IDisposable
 {

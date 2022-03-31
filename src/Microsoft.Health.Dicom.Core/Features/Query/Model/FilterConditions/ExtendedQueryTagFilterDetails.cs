@@ -7,7 +7,7 @@ using System;
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 
-namespace Microsoft.Health.Dicom.Core.Features.Query;
+namespace Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 
 /// <summary>
 /// Details required to create a extended query tag filter condition

@@ -292,4 +292,4 @@ tempkey.rsa
 **/.env
 
 # Json file to store the config for the .NET project
-# secrets.json
+secrets.json

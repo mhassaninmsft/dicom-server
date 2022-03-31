@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using FellowOakDicom;
 
-namespace Microsoft.Health.Dicom.Core.Features.Query;
+namespace Microsoft.Health.Dicom.Core.Features.Query.Model;
 
 public class QueryIncludeField
 {

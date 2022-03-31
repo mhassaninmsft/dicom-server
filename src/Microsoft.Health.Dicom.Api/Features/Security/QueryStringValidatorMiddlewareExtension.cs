@@ -4,9 +4,9 @@
 // -------------------------------------------------------------------------------------------------
 
 using EnsureThat;
-using Microsoft.Health.Dicom.Api.Features.Security;
+using Microsoft.AspNetCore.Builder;
 
-namespace Microsoft.AspNetCore.Builder;
+namespace Microsoft.Health.Dicom.Api.Features.Security;
 
 internal static class QueryStringValidatorMiddlewareExtension
 {

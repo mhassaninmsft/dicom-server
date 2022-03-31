@@ -14,7 +14,7 @@ using Microsoft.Health.Dicom.SqlServer.Features.Schema;
 using Microsoft.Health.Dicom.Tests.Common.Extensions;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.SqlServer.UnitTests.Features.Query;
+namespace Microsoft.Health.Dicom.SqlServer.UnitTests.Features.ExtendedQueryTag;
 
 public class AddInstanceTableValuedParametersBuilderTests
 {
@@ -22,9 +22,9 @@ public class AddInstanceTableValuedParametersBuilderTests
     [MemberData(nameof(GetSupportedDicomElement))]
     public void GivenSupportedDicomElement_WhenRead_ThenShouldReturnExpectedValue(DicomElement element, int schemaVersion, object expectedValue)
     {
-        DicomDataset dataset = new DicomDataset();
+        var dataset = new DicomDataset();
         dataset.Add(element);
-        QueryTag tag = new QueryTag(element.Tag.BuildExtendedQueryTagStoreEntry(vr: element.ValueRepresentation.Code));
+        var tag = new QueryTag(element.Tag.BuildExtendedQueryTagStoreEntry(vr: element.ValueRepresentation.Code));
         var parameters = ExtendedQueryTagDataRowsBuilder.Build(dataset, new QueryTag[] { tag }, (SchemaVersion)schemaVersion);
 
         ExtendedQueryTagDataType dataType = ExtendedQueryTagLimit.ExtendedQueryTagVRAndDataTypeMapping[element.ValueRepresentation.Code];
@@ -59,10 +59,10 @@ public class AddInstanceTableValuedParametersBuilderTests
     [MemberData(nameof(GetSupportedDicomSequenceElement))]
     public void GivenSupportedDicomSequenceElement_WhenRead_ThenShouldReturnExpectedValue(DicomItem item, string path, int key, int schemaVersion, object expectedValue)
     {
-        DicomDataset dataset = new DicomDataset();
+        var dataset = new DicomDataset();
         dataset.Add(item);
 
-        QueryTag tag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry(path, key, item.ValueRepresentation.Code));
+        var tag = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry(path, key, item.ValueRepresentation.Code));
 
         var parameters = ExtendedQueryTagDataRowsBuilder.Build(dataset, new QueryTag[] { tag }, (SchemaVersion)schemaVersion);
 
@@ -98,7 +98,7 @@ public class AddInstanceTableValuedParametersBuilderTests
     [Fact]
     public void GivenSupportedDicomSequenceElement_WhenRead_ThenShouldReturnMultipleExpectedValues()
     {
-        DicomDataset dataset = new DicomDataset();
+        var dataset = new DicomDataset();
         var item = new DicomSequence(
                 DicomTag.ReferencedRequestSequence,
                     new DicomDataset[] {
@@ -109,8 +109,8 @@ public class AddInstanceTableValuedParametersBuilderTests
                             DicomTag.RequestedProcedureID, "Bar"))});
         dataset.Add(item);
 
-        QueryTag tag1 = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("0040A370.00080050", 1, item.ValueRepresentation.Code));
-        QueryTag tag2 = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("0040A370.00401001", 2, item.ValueRepresentation.Code));
+        var tag1 = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("0040A370.00080050", 1, item.ValueRepresentation.Code));
+        var tag2 = new QueryTag(Tests.Common.Extensions.DicomTagExtensions.BuildWorkitemQueryTagStoreEntry("0040A370.00401001", 2, item.ValueRepresentation.Code));
 
         var parameters = ExtendedQueryTagDataRowsBuilder.Build(dataset, new QueryTag[] { tag1, tag2 }, (SchemaVersion)SchemaVersionConstants.Max);
 
@@ -190,7 +190,7 @@ public class AddInstanceTableValuedParametersBuilderTests
 
     private static long DicomTagToLong(DicomTag tag)
     {
-        return (long)((ulong)((tag.Group * 65536) + tag.Element));
+        return (long)(ulong)(tag.Group * 65536 + tag.Element);
     }
 
     private static DicomTag LongToDicomTag(long value)

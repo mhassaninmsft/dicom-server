@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using EnsureThat;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 using Microsoft.Health.Dicom.Core.Messages;
 
 namespace Microsoft.Health.Dicom.Core.Features.Query.Model;

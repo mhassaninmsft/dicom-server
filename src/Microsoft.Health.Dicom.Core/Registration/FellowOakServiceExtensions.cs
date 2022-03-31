@@ -5,9 +5,10 @@
 
 using FellowOakDicom;
 using FellowOakDicom.Imaging.NativeCodec;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Dicom.Core.Logging;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Health.Dicom.Core.Registration;
 
 internal static class FellowOakServiceExtensions
 {

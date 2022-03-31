@@ -6,6 +6,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using FellowOakDicom;
+using Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.Workitem;
 

@@ -11,7 +11,7 @@ using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Tests.Common.Extensions;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Core.UnitTests.Features.ChangeFeed;
+namespace Microsoft.Health.Dicom.Core.UnitTests.Features.ExtendedQueryTag;
 
 public class ExtendedQueryTagEntryValidatorTests
 {
@@ -31,7 +31,7 @@ public class ExtendedQueryTagEntryValidatorTests
     [Fact]
     public void GivenMissingLevel_WhenValidating_ThenShouldThrowException()
     {
-        AddExtendedQueryTagEntry entry = new AddExtendedQueryTagEntry { Path = "00101060", VR = "PN" };
+        var entry = new AddExtendedQueryTagEntry { Path = "00101060", VR = "PN" };
         Assert.Throws<ExtendedQueryTagEntryValidationException>(() => _extendedQueryTagEntryValidator.ValidateExtendedQueryTags(new AddExtendedQueryTagEntry[] { entry }));
     }
 
@@ -178,7 +178,7 @@ public class ExtendedQueryTagEntryValidatorTests
     [Fact]
     public void GivenPrivateIdentificationCodeWithoutVR_WhenValidating_ThenShouldSucceed()
     {
-        DicomTag dicomTag = new DicomTag(0x2201, 0x0010);
+        var dicomTag = new DicomTag(0x2201, 0x0010);
         AddExtendedQueryTagEntry entry = CreateExtendedQueryTagEntry(dicomTag.GetPath(), null);
         _extendedQueryTagEntryValidator.ValidateExtendedQueryTags(new AddExtendedQueryTagEntry[] { entry });
     }
@@ -186,7 +186,7 @@ public class ExtendedQueryTagEntryValidatorTests
     [Fact]
     public void GivenPrivateIdentificationCodeWithWrongVR_WhenValidating_ThenShouldSucceed()
     {
-        DicomTag dicomTag = new DicomTag(0x2201, 0x0010);
+        var dicomTag = new DicomTag(0x2201, 0x0010);
         AddExtendedQueryTagEntry entry = CreateExtendedQueryTagEntry(dicomTag.GetPath(), DicomVR.AE.Code);
         Assert.Throws<ExtendedQueryTagEntryValidationException>(() => _extendedQueryTagEntryValidator.ValidateExtendedQueryTags(new AddExtendedQueryTagEntry[] { entry }));
     }

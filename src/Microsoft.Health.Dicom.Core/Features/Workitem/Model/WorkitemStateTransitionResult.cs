@@ -3,7 +3,7 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-namespace Microsoft.Health.Dicom.Core.Features.Workitem;
+namespace Microsoft.Health.Dicom.Core.Features.Workitem.Model;
 
 /// <summary>
 /// Workitem state transition result

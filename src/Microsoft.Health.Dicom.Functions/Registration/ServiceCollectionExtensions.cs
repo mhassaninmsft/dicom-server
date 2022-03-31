@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Health.Blob.Configs;
+using Microsoft.Health.Dicom.Blob.Registration;
 using Microsoft.Health.Dicom.Core.Configs;
 using Microsoft.Health.Dicom.Core.Extensions;
 using Microsoft.Health.Dicom.Core.Modules;
@@ -21,12 +22,13 @@ using Microsoft.Health.Dicom.Functions.Configuration;
 using Microsoft.Health.Dicom.Functions.Indexing;
 using Microsoft.Health.Dicom.Functions.Registration;
 using Microsoft.Health.Dicom.Functions.Serialization;
+using Microsoft.Health.Dicom.SqlServer.Registration;
 using Microsoft.Health.Extensions.DependencyInjection;
 using Microsoft.Health.Operations.Functions.Management;
 using Microsoft.Health.SqlServer.Configs;
 using Microsoft.IO;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Health.Dicom.Functions.Registration;
 
 /// <summary>
 /// A <see langword="static"/> collection of methods for configuring DICOM Azure Functions.

@@ -5,7 +5,7 @@
 using EnsureThat;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 
-namespace Microsoft.Health.Dicom.Core.Features.Query;
+namespace Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 
 public class PersonNameFuzzyMatchCondition : SingleValueMatchCondition<string>
 {

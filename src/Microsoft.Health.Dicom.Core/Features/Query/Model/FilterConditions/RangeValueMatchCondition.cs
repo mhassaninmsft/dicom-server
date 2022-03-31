@@ -4,7 +4,7 @@
 // -------------------------------------------------------------------------------------------------
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 
-namespace Microsoft.Health.Dicom.Core.Features.Query;
+namespace Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 
 public abstract class RangeValueMatchCondition<T> : QueryFilterCondition
 {

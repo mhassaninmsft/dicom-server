@@ -30,6 +30,7 @@ namespace Microsoft.Health.Dicom.Api.Controllers;
 [ApiVersion("1.0-prerelease")]
 [ApiVersion("1")]
 [ServiceFilter(typeof(DicomAudit.AuditLoggingFilterAttribute))]
+//[Route("/api/1")]
 public class ExportController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -69,6 +70,23 @@ public class ExportController : ControllerBase
         Response.AddLocationHeader(response.Operation.Href);
         return StatusCode((int)HttpStatusCode.Accepted, response.Operation);
     }
+
+    [HttpGet]
+    //[BodyModelStateValidator]
+    //[Produces(KnownContentTypes.ApplicationJson)]
+    //[Consumes(KnownContentTypes.ApplicationJson)]
+    //[ProducesResponseType(typeof(ExportResponse), (int)HttpStatusCode.Accepted)]
+    //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [VersionedRoute("encode")]
+    [Route("encode")]
+    //[AuditEventType(AuditEventSubType.Export)]
+    public async Task<string> Encode(string plainText = "sadas")
+    {
+        _logger.LogInformation("DICOM Web Export Encode request received, with input {PlainText}.", plainText);
+        await Task.Delay(1);
+        return "dsadsa";
+    }
+
 
     private void EnsureFeatureIsEnabled()
     {

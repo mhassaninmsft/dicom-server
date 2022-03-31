@@ -7,7 +7,7 @@ using System;
 using EnsureThat;
 using FellowOakDicom;
 
-namespace Microsoft.Health.Dicom.Core;
+namespace Microsoft.Health.Dicom.Core.Web;
 
 public static class DicomTransferSyntaxUids
 {

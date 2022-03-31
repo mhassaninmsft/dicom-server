@@ -7,13 +7,14 @@ using System.Collections.Generic;
 using System.Linq;
 using FellowOakDicom;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
-using Microsoft.Health.Dicom.Core.Features.Query;
+//using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
+using Microsoft.Health.Dicom.Core.Features.Query.Model.FilterConditions;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.Tests.Common;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Core.UnitTests.Features.Query;
+namespace Microsoft.Health.Dicom.Core.UnitTests.Features.Workitem;
 
 public class WorkitemQueryResponseBuilderTests
 {

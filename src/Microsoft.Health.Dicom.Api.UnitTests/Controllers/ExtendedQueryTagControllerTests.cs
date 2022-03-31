@@ -26,7 +26,7 @@ using Microsoft.Net.Http.Headers;
 using NSubstitute;
 using Xunit;
 
-namespace Microsoft.Health.Dicom.Api.UnitTests.Extensions;
+namespace Microsoft.Health.Dicom.Api.UnitTests.Controllers;
 
 public class ExtendedQueryTagControllerTests
 {
@@ -113,7 +113,7 @@ public class ExtendedQueryTagControllerTests
     [Fact]
     public async Task GivenOperationId_WhenAddingTags_ReturnIdWithHeader()
     {
-        Guid id = Guid.NewGuid();
+        var id = Guid.NewGuid();
         var expected = new AddExtendedQueryTagResponse(
             new OperationReference(id, new Uri("https://dicom.contoso.io/unit/test/Operations/" + id, UriKind.Absolute)));
         IMediator mediator = Substitute.For<IMediator>();

@@ -5,9 +5,10 @@
 
 using EnsureThat;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Health.Blob.Configs;
-using Microsoft.Health.Dicom.Blob;
+//using Microsoft.Health.Dicom.Blob;
 using Microsoft.Health.Dicom.Blob.Features.Export;
 using Microsoft.Health.Dicom.Blob.Features.Storage;
 using Microsoft.Health.Dicom.Blob.Utilities;
@@ -15,7 +16,7 @@ using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.Export;
 using Microsoft.Health.Dicom.Core.Registration;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Microsoft.Health.Dicom.Blob.Registration;
 
 public static class DicomFunctionsBuilderRegistrationExtensions
 {
