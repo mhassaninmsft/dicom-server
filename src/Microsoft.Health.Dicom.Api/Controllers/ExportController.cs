@@ -20,6 +20,7 @@ using Microsoft.Health.Dicom.Core.Configs;
 using Microsoft.Health.Dicom.Core.Exceptions;
 using Microsoft.Health.Dicom.Core.Extensions;
 using Microsoft.Health.Dicom.Core.Features.Audit;
+using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Messages.Export;
 using Microsoft.Health.Dicom.Core.Models.Export;
 using Microsoft.Health.Dicom.Core.Web;
@@ -36,18 +37,24 @@ public class ExportController : ControllerBase
     private readonly ILogger<ExportController> _logger;
     private readonly bool _featureEnabled;
 
+    private readonly ISecretService _secretService;
+
     public ExportController(
         IMediator mediator,
         IOptions<FeatureConfiguration> featureConfiguration,
-        ILogger<ExportController> logger)
+        ILogger<ExportController> logger,
+        ISecretService secretService)
+
     {
         EnsureArg.IsNotNull(mediator, nameof(mediator));
         EnsureArg.IsNotNull(featureConfiguration?.Value, nameof(featureConfiguration));
         EnsureArg.IsNotNull(logger, nameof(logger));
+        EnsureArg.IsNotNull(secretService, nameof(secretService));
 
         _mediator = mediator;
         _logger = logger;
         _featureEnabled = featureConfiguration.Value.EnableExport;
+        _secretService = secretService;
     }
 
     [HttpPost]
@@ -70,6 +77,43 @@ public class ExportController : ControllerBase
         Response.AddLocationHeader(response.Operation.Href);
         return StatusCode((int)HttpStatusCode.Accepted, response.Operation);
     }
+
+    // TODO: Below controllers are for testing only, Should be removed in final code submission
+    [HttpGet]
+    //[BodyModelStateValidator]
+    //[Produces(KnownContentTypes.ApplicationJson)]
+    //[Consumes(KnownContentTypes.ApplicationJson)]
+    //[ProducesResponseType(typeof(ExportResponse), (int)HttpStatusCode.Accepted)]
+    //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    //[VersionedRoute("encode")]
+    [Route("store")]
+    [AuditEventType(AuditEventSubType.Export)]
+    public async Task<string> Store(string plainText, string secretName)
+    {
+        _logger.LogInformation("DICOM Web Export store request received with {PlainText} and {SecertName}.", plainText, secretName);
+        //var res = await _cryptoService.EncryptString(plainText);
+        var res = await _secretService.StoreSecret(secretName, plainText);
+        await Task.Delay(1);
+        return $"hello there {plainText} and encode is {res.SecretName}";
+    }
+    [HttpGet]
+    //[BodyModelStateValidator]
+    //[Produces(KnownContentTypes.ApplicationJson)]
+    //[Consumes(KnownContentTypes.ApplicationJson)]
+    //[ProducesResponseType(typeof(ExportResponse), (int)HttpStatusCode.Accepted)]
+    //[ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    //[VersionedRoute("encode")]
+    [Route("retrieve")]
+    [AuditEventType(AuditEventSubType.Export)]
+    public async Task<string> Retrieve(string secretName)
+    {
+        _logger.LogInformation("DICOM Web Export retreive received, with input {SecretName}.", secretName);
+        //var res = await _cryptoService.EncryptString(plainText);
+        var res = await _secretService.GetSecret(secretName);
+        await Task.Delay(1);
+        return $"hello there plain value secert {res}";
+    }
+
 
     private void EnsureFeatureIsEnabled()
     {

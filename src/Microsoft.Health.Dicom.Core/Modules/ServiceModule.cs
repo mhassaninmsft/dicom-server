@@ -10,6 +10,7 @@ using Microsoft.Health.Dicom.Core.Configs;
 using Microsoft.Health.Dicom.Core.Extensions;
 using Microsoft.Health.Dicom.Core.Features.ChangeFeed;
 using Microsoft.Health.Dicom.Core.Features.Common;
+using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Delete;
 using Microsoft.Health.Dicom.Core.Features.Export;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
@@ -226,7 +227,13 @@ public class ServiceModule : IStartupModule
                 .AsSelf()
                 .AsImplementedInterfaces();
         }
-
+        if (_featureConfiguration.EnableKeyVaultStore)
+        {
+            services.Add<AzureKeyVaultCryptoService>()
+                .Scoped()
+                .AsSelf()
+                .AsImplementedInterfaces();
+        }
         SetupWorkitemTypes(services);
         RegisterExportServices(services);
     }

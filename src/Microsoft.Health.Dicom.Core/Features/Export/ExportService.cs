@@ -7,6 +7,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
+using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Operations;
 using Microsoft.Health.Dicom.Core.Features.Routing;
 using Microsoft.Health.Dicom.Core.Messages.Export;
@@ -21,17 +22,20 @@ public class ExportService : IExportService
     private readonly ExportSinkFactory _sinkFactory;
     private readonly IDicomOperationsClient _client;
     private readonly IUrlResolver _uriResolver;
+    private readonly ISecretService _secretService;
 
     public ExportService(
         ExportSourceFactory sourceFactory,
         ExportSinkFactory sinkFactory,
         IDicomOperationsClient client,
-        IUrlResolver uriResolver)
+        IUrlResolver uriResolver,
+        ISecretService secretService)
     {
         _sourceFactory = EnsureArg.IsNotNull(sourceFactory, nameof(sourceFactory));
         _sinkFactory = EnsureArg.IsNotNull(sinkFactory, nameof(sinkFactory));
         _client = EnsureArg.IsNotNull(client, nameof(client));
         _uriResolver = EnsureArg.IsNotNull(uriResolver, nameof(uriResolver));
+        _secretService = EnsureArg.IsNotNull(secretService, nameof(secretService));
     }
 
     /// <summary>
@@ -69,6 +73,7 @@ public class ExportService : IExportService
     {
         _sourceFactory.Validate(input.Manifest);
         _sinkFactory.Validate(input.Destination);
+        await _sinkFactory.EncryptSecrets(input.Destination);
 
         Guid operationId = await _client.StartExportAsync(input, cancellationToken);
         return new OperationReference(operationId, _uriResolver.ResolveOperationStatusUri(operationId));

@@ -290,3 +290,5 @@ tempkey.rsa
 
 # docker .env file
 **/.env
+
+secrets.json

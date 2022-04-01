@@ -5,20 +5,14 @@
 
 using System;
 
-namespace Microsoft.Health.Dicom.Blob.Features.Export;
 
-internal sealed class AzureBlobExportOptions
+namespace Microsoft.Health.Dicom.Core.Features.Crypto;
+public class SecretRepresntation
 {
-    public string SasToken { get; set; }
-
+    public DateTimeOffset ExpiryTime { get; set; }
+    public string SecretName { get; set; }
     /// <summary>
-    /// Like https://mystorageacct.blob.core.windows.net/mycontainer
+    /// Optional, in case the secret has an id
     /// </summary>
-    public Uri ContainerUri { get; set; }
-
-
-    /// <summary>
-    /// Destination folder path
-    /// </summary>
-    public string FolderPath { get; set; }
+    public string SecretId { get; set; }
 }

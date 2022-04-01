@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Development.IdentityProvider.Registration;
+using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Security;
 using Microsoft.Health.Dicom.Functions.Client;
 
@@ -35,6 +36,7 @@ public class Startup
         services.AddDicomServer(Configuration)
             .AddBlobDataStores(Configuration)
             .AddSqlServer(Configuration)
+            .AddAzureKeyVault(Configuration)
             .AddAzureFunctionsClient(Configuration)
             .AddBackgroundWorkers()
             .AddHostedServices();
