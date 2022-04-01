@@ -5,6 +5,7 @@
 
 using System;
 using System.Threading.Tasks;
+using System.Text;
 using Azure.Storage.Blobs;
 using EnsureThat;
 using Microsoft.Extensions.Configuration;
@@ -22,39 +23,50 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
 {
     private readonly ISecretService _secretService;
     public ExportDestinationType Type => ExportDestinationType.AzureBlob;
+
     public AzureBlobExportSinkProvider(ISecretService secretService)
     {
         EnsureArg.IsNotNull(secretService, nameof(secretService));
         _secretService = secretService;
     }
-    public IExportSink Create(IServiceProvider provider, IConfiguration config)
+
+    public IExportSink Create(IServiceProvider provider, IConfiguration config, Guid operationId)
+
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
         EnsureArg.IsNotNull(config, nameof(config));
         // source objects
-        var sourceBlobServiceClient = provider.GetService<BlobServiceClient>();
-        var blobOptions = provider.GetService<IOptions<BlobOperationOptions>>();
-        var blobContainerConfig = provider.GetService<IOptionsMonitor<BlobContainerConfiguration>>();
-        // The Function App needs to register an Azure KeyVault service
-        //ISecretService secretService = provider.GetService<ISecretService>();
-        //config = SubstituteSASTokenSecretIfExists(secretService, config).Result;
+        var sourceClient = provider.GetRequiredService<BlobServiceClient>();
+        var blobOptions = provider.GetRequiredService<IOptions<BlobOperationOptions>>();
+        var blobContainerConfig = provider.GetRequiredService<IOptionsMonitor<BlobContainerConfiguration>>();
         DecrypSecrets(config).Wait();
         // destination objects
-        InitializeDestinationStore(config, out BlobContainerClient destBlobContainerClient, out string destPath);
+        InitializeDestinationStore(config, out BlobContainerClient destClient, out string destPath);
 
         // init and return
-        BlobCopyStore store = new BlobCopyStore(sourceBlobServiceClient, blobContainerConfig, blobOptions, destBlobContainerClient, destPath);
-        return new AzureBlobExportSink(store);
+        return new AzureBlobExportSink(
+            sourceClient,
+            destClient,
+            Encoding.UTF8,
+            destPath,
+            $"error-{operationId:N}.log",
+            blobContainerConfig,
+            blobOptions);
     }
 
     public void Validate(IConfiguration config)
     {
         AzureBlobExportOptions options = config.Get<AzureBlobExportOptions>();
 
-        if (options.ContainerUri != null && options.ContainerSasUri != null)
+        if (options.ContainerUri == null)
             throw new FormatException();
-        else if (options.ContainerUri == null && options.ContainerSasUri == null)
-            throw new FormatException();
+
+        // todo config length
+        // Valid names https://docs.microsoft.com/en-us/rest/api/storageservices/naming-and-referencing-containers--blobs--and-metadata
+        if (!string.IsNullOrWhiteSpace(options.FolderPath) && options.FolderPath.Length > 200)
+        {
+            throw new ArgumentException("Folder path too long");
+        }
     }
 
     public async Task EncrypSecrets(IConfiguration config)
@@ -92,11 +104,11 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
     private static void InitializeDestinationStore(IConfiguration config, out BlobContainerClient blobContainerClient, out string path)
     {
         var blobClientOptions = config.Get<BlobServiceClientOptions>();
-        var exportConfig = config.Get<AzureBlobExportOptions>();
+        var exportOptions = config.Get<AzureBlobExportOptions>();
 
-        path = exportConfig.FolderPath;
+        path = exportOptions.FolderPath;
 
-        if (exportConfig.ContainerUri != null)
+        if (exportOptions.SasToken == null)
         {
             throw new NotImplementedException();
             //need a way to pass the MI config from KeyVault to here
@@ -105,7 +117,10 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
         }
         else
         {
-            blobContainerClient = new BlobContainerClient(exportConfig.ContainerSasUri, blobClientOptions);
+            var builder = new UriBuilder(exportOptions.ContainerUri);
+            builder.Query += exportOptions.SasToken;
+
+            blobContainerClient = new BlobContainerClient(builder.Uri, blobClientOptions);
         }
     }
 }

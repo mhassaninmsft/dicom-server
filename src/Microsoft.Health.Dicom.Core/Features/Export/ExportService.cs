@@ -58,6 +58,11 @@ public class ExportService : IExportService
                     Type = ExportSourceType.Identifiers,
                 },
                 Destination = input.Destination,
+                Batching = new Models.Operations.BatchOptions
+                {
+                    MaxParallel = 1,
+                    Size = 1,
+                }
             },
             cancellationToken);
 

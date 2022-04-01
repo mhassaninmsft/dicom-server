@@ -4,17 +4,13 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Health.Dicom.Core.Features.Model;
 
 namespace Microsoft.Health.Dicom.Core.Features.Export;
 
-public interface IExportSink : IAsyncDisposable
+public sealed class CopyFailureEventArgs : EventArgs
 {
-    event EventHandler<CopyFailureEventArgs> CopyFailure;
+    public VersionedInstanceIdentifier Identifier { get; init; }
 
-    Uri ErrorHref { get; }
-
-    Task<bool> CopyAsync(VersionedInstanceIdentifier identifier, CancellationToken cancellationToken = default);
+    public Exception Exception { get; init; }
 }
