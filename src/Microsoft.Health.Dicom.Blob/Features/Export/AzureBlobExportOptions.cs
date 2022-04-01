@@ -16,10 +16,6 @@ internal sealed class AzureBlobExportOptions
     /// </summary>
     public Uri ContainerUri { get; set; }
 
-    /// <summary>
-    /// Like https://mystorageacct.blob.core.windows.net/mycontainer
-    /// </summary>
-    public string SasTokenName { get; set; }
 
     /// <summary>
     /// Destination folder path

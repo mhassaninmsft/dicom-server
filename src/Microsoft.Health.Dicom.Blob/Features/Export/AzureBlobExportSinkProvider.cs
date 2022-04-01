@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Health.Blob.Configs;
-using Microsoft.Health.Dicom.Blob.Features.Storage;
 using Microsoft.Health.Dicom.Core.Features.Crypto;
 using Microsoft.Health.Dicom.Core.Features.Export;
 using Microsoft.Health.Dicom.Core.Models.Export;
@@ -73,14 +72,12 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
     {
         EnsureArg.IsNotNull(config, nameof(config));
         AzureBlobExportOptions options = config.Get<AzureBlobExportOptions>();
-        if (options.ContainerSasUri != null)
+        if (options.SasToken != null)
         {
-            var containerSasUri = options.ContainerSasUri.ToString();
+            var sasToken = options.SasToken;
             var secretName = Guid.NewGuid().ToString();
-            await _secretService.StoreSecret(secretName, containerSasUri);
-            config["AzureBlobExportOptions:SasTokenName"] = secretName;
-            // TODO: IS there a better way of doing this
-            config["AzureBlobExportOptions:ContainerSasUri"] = "https://www.ununsed.com";
+            await _secretService.StoreSecret(secretName, sasToken);
+            config["AzureBlobExportOptions:SasToken"] = secretName;
         }
 
     }
@@ -89,9 +86,9 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
     {
         EnsureArg.IsNotNull(config, nameof(config));
         AzureBlobExportOptions options = config.Get<AzureBlobExportOptions>();
-        if (!string.IsNullOrEmpty(options.SasTokenName))
+        if (!string.IsNullOrEmpty(options.SasToken))
         {
-            var secretName = options.SasTokenName;
+            var secretName = options.SasToken;
             var sasTokenUri = await _secretService.GetSecret(secretName);
             config["AzureBlobExportOptions:SasTokenName"] = "";
             // TODO: IS there a better way of doing this

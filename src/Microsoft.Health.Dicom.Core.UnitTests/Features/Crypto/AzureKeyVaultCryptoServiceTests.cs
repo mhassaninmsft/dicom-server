@@ -22,7 +22,8 @@ public class AzureKeyVaultCryptoServiceTests
     {
         _output = output;
     }
-    [Fact]
+    //TODO: Move to integration tests
+    [Fact(Skip = "Should be in integration tests, since it requires a connection to an Azure Key vault")]
     public async Task TestBaseWorkflow()
     {
         var logger = Substitute.For<ILogger<AzureKeyVaultCryptoService>>();
