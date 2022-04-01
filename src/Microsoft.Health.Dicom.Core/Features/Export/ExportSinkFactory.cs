@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using EnsureThat;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Health.Dicom.Core.Models.Export;
@@ -41,6 +42,16 @@ public sealed class ExportSinkFactory
             throw new InvalidOperationException();
 
         provider.Validate(GetConfiguration(location.Configuration));
+    }
+
+    public async Task EncryptSecrets(ExportDestination location)
+    {
+        EnsureArg.IsNotNull(location, nameof(location));
+
+        if (!_providers.TryGetValue(location.Type, out IExportSinkProvider provider))
+            throw new InvalidOperationException();
+
+        await provider.EncrypSecrets(GetConfiguration(location.Configuration));
     }
 
     private static IConfiguration GetConfiguration(IEnumerable<KeyValuePair<string, string>> pairs)

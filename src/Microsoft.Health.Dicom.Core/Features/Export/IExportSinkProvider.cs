@@ -4,6 +4,7 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Health.Dicom.Core.Models.Export;
 
@@ -16,4 +17,6 @@ public interface IExportSinkProvider
     IExportSink Create(IServiceProvider provider, IConfiguration config);
 
     void Validate(IConfiguration config);
+    Task EncrypSecrets(IConfiguration config);
+    Task DecrypSecrets(IConfiguration config);
 }

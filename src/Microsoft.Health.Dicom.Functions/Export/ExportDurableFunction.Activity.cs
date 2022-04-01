@@ -26,6 +26,7 @@ public partial class ExportDurableFunction
         EnsureArg.IsNotNull(logger, nameof(logger));
 
         await using IExportSource source = _sourceFactory.CreateSource(args.Source);
+        //DEcrypt Here
         await using IExportSink sink = _sinkFactory.CreateSink(args.Destination);
 
         // Export

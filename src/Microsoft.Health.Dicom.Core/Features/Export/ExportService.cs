@@ -4,8 +4,6 @@
 // -------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EnsureThat;
@@ -49,18 +47,6 @@ public class ExportService : IExportService
     public async Task<ExportIdentifiersResponse> StartExportingIdentifiersAsync(ExportIdentifiersInput input, CancellationToken cancellationToken)
     {
         EnsureArg.IsNotNull(input, nameof(input));
-        var sasTokenKey = "ContainerSasUri";
-        string containerSasUri;
-        if (input.Destination.Configuration.TryGetValue(sasTokenKey, out containerSasUri))
-        {
-            //TODO: Can we choose the operation ID apriori here
-            var secretName = Guid.NewGuid().ToString();
-            var secret = await _secretService.StoreSecret(secretName, containerSasUri);
-            Dictionary<string, string> updatedDictionary = input.Destination.Configuration.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            // The SasURI serialzies  is represented as a `System.Uri` there could be a problem when deserializng a plain string instead
-            updatedDictionary[containerSasUri] = secret.SecretName;
-            input.Destination.Configuration = updatedDictionary;
-        }
 
         OperationReference operation = await StartExportAsync(
             new ExportInput
@@ -82,6 +68,7 @@ public class ExportService : IExportService
     {
         _sourceFactory.Validate(input.Manifest);
         _sinkFactory.Validate(input.Destination);
+        await _sinkFactory.EncryptSecrets(input.Destination);
 
         Guid operationId = await _client.StartExportAsync(input, cancellationToken);
         return new OperationReference(operationId, _uriResolver.ResolveOperationStatusUri(operationId));

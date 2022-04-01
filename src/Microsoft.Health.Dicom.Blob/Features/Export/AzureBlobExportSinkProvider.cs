@@ -20,8 +20,13 @@ namespace Microsoft.Health.Dicom.Blob.Features.Export;
 
 public class AzureBlobExportSinkProvider : IExportSinkProvider
 {
+    private readonly ISecretService _secretService;
     public ExportDestinationType Type => ExportDestinationType.AzureBlob;
-
+    public AzureBlobExportSinkProvider(ISecretService secretService)
+    {
+        EnsureArg.IsNotNull(secretService, nameof(secretService));
+        _secretService = secretService;
+    }
     public IExportSink Create(IServiceProvider provider, IConfiguration config)
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
@@ -31,8 +36,9 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
         var blobOptions = provider.GetService<IOptions<BlobOperationOptions>>();
         var blobContainerConfig = provider.GetService<IOptionsMonitor<BlobContainerConfiguration>>();
         // The Function App needs to register an Azure KeyVault service
-        ISecretService secretService = provider.GetService<ISecretService>();
-        config = SubstituteSASTokenSecretIfExists(secretService, config).Result;
+        //ISecretService secretService = provider.GetService<ISecretService>();
+        //config = SubstituteSASTokenSecretIfExists(secretService, config).Result;
+        DecrypSecrets(config).Wait();
         // destination objects
         InitializeDestinationStore(config, out BlobContainerClient destBlobContainerClient, out string destPath);
 
@@ -50,18 +56,39 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
         else if (options.ContainerUri == null && options.ContainerSasUri == null)
             throw new FormatException();
     }
-    // Subsitite back the container URL
-    private async static Task<IConfiguration> SubstituteSASTokenSecretIfExists(ISecretService secretService, IConfiguration config)
+
+    public async Task EncrypSecrets(IConfiguration config)
     {
-        var sasTokenKey = "ContainerSasUri";
-        var secretName = config[sasTokenKey];
-        if (!string.IsNullOrEmpty(secretName))
+        EnsureArg.IsNotNull(config, nameof(config));
+        AzureBlobExportOptions options = config.Get<AzureBlobExportOptions>();
+        if (options.ContainerSasUri != null)
         {
-            var secretValue = await secretService.GetSecret(secretName);
-            config[sasTokenKey] = secretValue;
+            var containerSasUri = options.ContainerSasUri.ToString();
+            var secretName = Guid.NewGuid().ToString();
+            await _secretService.StoreSecret(secretName, containerSasUri);
+            config["AzureBlobExportOptions:SasTokenName"] = secretName;
+            // TODO: IS there a better way of doing this
+            config["AzureBlobExportOptions:ContainerSasUri"] = "https://www.ununsed.com";
         }
-        return config;
+
     }
+
+    public async Task DecrypSecrets(IConfiguration config)
+    {
+        EnsureArg.IsNotNull(config, nameof(config));
+        AzureBlobExportOptions options = config.Get<AzureBlobExportOptions>();
+        if (!string.IsNullOrEmpty(options.SasTokenName))
+        {
+            var secretName = options.SasTokenName;
+            var sasTokenUri = await _secretService.GetSecret(secretName);
+            config["AzureBlobExportOptions:SasTokenName"] = "";
+            // TODO: IS there a better way of doing this
+            config["AzureBlobExportOptions:ContainerSasUri"] = sasTokenUri;
+
+        }
+
+    }
+
     private static void InitializeDestinationStore(IConfiguration config, out BlobContainerClient blobContainerClient, out string path)
     {
         var blobClientOptions = config.Get<BlobServiceClientOptions>();
