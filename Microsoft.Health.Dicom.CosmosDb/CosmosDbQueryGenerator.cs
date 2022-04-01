@@ -28,7 +28,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
             else
             {
-                _query += " AND "; // *** TODO *** does this need spaces?
+                _query += " AND ";
             }
             _query += val;
         }
@@ -60,21 +60,17 @@ namespace Microsoft.Health.Dicom.CosmosDb
             // Ensure not null
             EnsureArg.IsNotNull(rangeValueMatchCondition, nameof(rangeValueMatchCondition));
 
-            //get the tag
+            // get the tag
             var tagName = FormatTagString(rangeValueMatchCondition.QueryTag);
 
             var fromDate = rangeValueMatchCondition.Minimum;
             var toDate = rangeValueMatchCondition.Maximum;
+
             // match on formatting written to cosmos
             var fromDateFormatted = fromDate.ToString("yyyyMMdd");
             var toDateFormatted = toDate.ToString("yyyyMMdd");
 
-            // ***TODO** ideally not string plaintext to prevent sql injection
             string condition = $"(c['value']['{tagName}']['Value'][0] BETWEEN '{fromDateFormatted}' AND '{toDateFormatted}')";
-
-            //INSPO: (later)
-            //****** DONE *** do we want Linq? eventually
-            //IQueryable<Order> orders = container.GetItemLinqQueryable<Order>(allowSynchronousQueryExecution: true).Where(o => o.ShipDate >= DateTime.UtcNow.AddDays(-3));
 
             AddToQuery(condition);
         }
@@ -93,45 +89,13 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             EnsureArg.IsNotNull(fuzzyMatchCondition, nameof(fuzzyMatchCondition));
             var tagName = FormatTagString(fuzzyMatchCondition.QueryTag);
-            var tagValue = fuzzyMatchCondition.Value.ToString(); // **** TODO **** change this to be matching value or something
-
-            //If true fuzzy matching is applied to PatientName attribute.
-            //It will do a prefix word match of any name part inside PatientName value.
-            //For example, if PatientName is "John^Doe",
-            //          then "joh", "do", "jo do", "Doe" and "John Doe" will all match.
-            //However "ohn" will not match
-
-            // MAYBE??? minimum search length ? example `jo d` may be too unreasonable and costly, what about empty string?
+            var tagValue = fuzzyMatchCondition.Value.ToString();
 
             var nameWords = tagValue.Split(' ');
             var nameWordsLength = nameWords.Length;
-            //searches 'd on'
-            //if (nameWordsLength > 1)
-            //{
-            //    for (var i = 0; i < nameWordsLength; i++)
-            //    {
-            //        var searchName = nameWords[i];
-            //        if (i == 0)
-            //        {
-            //            nameWords[i] = $"(STARTSWITH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{searchName}', true))"; // ***TODO*** first value is possible to change
-            //        }
-            //        else
-            //        {
-            //            nameWords[i] = $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{searchName}', true))"; // ***todo*** first value is possible to change
-            //        }
-
-            //    }
-            //}
-            //else
-            //{
-            //    nameWords[0] = $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{nameWords[0]}', true))"; // ***todo*** first value is possible to change
-            //}
-            //var condition = "(" + String.Join(" AND ", nameWords) + ")";
-
             for (var i = 0; i < nameWordsLength; i++)
             {
-                //comes in with `dav`
-                nameWords[i] = $"{nameWords[i]}.*"; // *** TODO *** Probably can be optimized
+                nameWords[i] = $"{nameWords[i]}.*";
             }
             var condition = $"(REGEXMATCH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{String.Join("", nameWords)}', 'i'))";
 
@@ -153,9 +117,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(LongRangeValueMatchCondition longRangeValueMatchCondition)
         {
-            // *** TODO *** based on conformance statement, no ranged search on longs ????
             throw new NotImplementedException();
-
         }
 
         public override void Visit(LongSingleValueMatchCondition longSingleValueMatchCondition)
@@ -167,5 +129,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             AddToQuery(condition);
         }
+
+        // *** TODO *** Age string
     }
 }
