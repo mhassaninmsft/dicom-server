@@ -89,11 +89,8 @@ public class AzureBlobExportSinkProvider : IExportSinkProvider
         if (!string.IsNullOrEmpty(options.SasToken))
         {
             var secretName = options.SasToken;
-            var sasTokenUri = await _secretService.GetSecret(secretName);
-            config["AzureBlobExportOptions:SasTokenName"] = "";
-            // TODO: IS there a better way of doing this
-            config["AzureBlobExportOptions:ContainerSasUri"] = sasTokenUri;
-
+            var decryptedSasToken = await _secretService.GetSecret(secretName);
+            config["AzureBlobExportOptions:SasToken"] = decryptedSasToken;
         }
 
     }
