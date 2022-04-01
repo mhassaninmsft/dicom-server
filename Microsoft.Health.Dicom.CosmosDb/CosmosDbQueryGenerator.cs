@@ -61,7 +61,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
             EnsureArg.IsNotNull(rangeValueMatchCondition, nameof(rangeValueMatchCondition));
 
             //get the tag
-            // *** TODO *** limit the date comparisons to the two tags supported currently
             var tagName = FormatTagString(rangeValueMatchCondition.QueryTag);
 
             var fromDate = rangeValueMatchCondition.Minimum;
@@ -96,25 +95,45 @@ namespace Microsoft.Health.Dicom.CosmosDb
             var tagName = FormatTagString(fuzzyMatchCondition.QueryTag);
             var tagValue = fuzzyMatchCondition.Value.ToString(); // **** TODO **** change this to be matching value or something
 
-            //f true fuzzy matching is applied to PatientName attribute.
+            //If true fuzzy matching is applied to PatientName attribute.
             //It will do a prefix word match of any name part inside PatientName value.
             //For example, if PatientName is "John^Doe",
             //          then "joh", "do", "jo do", "Doe" and "John Doe" will all match.
             //However "ohn" will not match
 
-            // split on spaces and CONTAINS(slksjf) OR contains(sjifiwoe)
-            // REGEX MATCH?
+            // MAYBE??? minimum search length ? example `jo d` may be too unreasonable and costly, what about empty string?
+
             var nameWords = tagValue.Split(' ');
-            for (var i = 0; i < nameWords.Length; i++)
+            var nameWordsLength = nameWords.Length;
+            //searches 'd on'
+            //if (nameWordsLength > 1)
+            //{
+            //    for (var i = 0; i < nameWordsLength; i++)
+            //    {
+            //        var searchName = nameWords[i];
+            //        if (i == 0)
+            //        {
+            //            nameWords[i] = $"(STARTSWITH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{searchName}', true))"; // ***TODO*** first value is possible to change
+            //        }
+            //        else
+            //        {
+            //            nameWords[i] = $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{searchName}', true))"; // ***todo*** first value is possible to change
+            //        }
+
+            //    }
+            //}
+            //else
+            //{
+            //    nameWords[0] = $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{nameWords[0]}', true))"; // ***todo*** first value is possible to change
+            //}
+            //var condition = "(" + String.Join(" AND ", nameWords) + ")";
+
+            for (var i = 0; i < nameWordsLength; i++)
             {
-                //condition += $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic']), '{name}')";
-                var searchName = nameWords[i];
-                nameWords[i] = $"(CONTAINS(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{searchName}', true))";
+                //comes in with `dav`
+                nameWords[i] = $"{nameWords[i]}.*"; // *** TODO *** Probably can be optimized
             }
-
-            var condition = "(" + String.Join(" OR ", nameWords) + ")"; // ***TODO*** and????
-
-            //var condition = $"(STARTSWITH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{tagValue}'))";
+            var condition = $"(REGEXMATCH(c['value']['{tagName}']['Value'][0]['Alphabetic'], '{String.Join("", nameWords)}', 'i'))";
 
             AddToQuery(condition);
         }
@@ -123,7 +142,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             //Ensure the condition is not null
             EnsureArg.IsNotNull(doubleSingleValueMatchCondition, nameof(doubleSingleValueMatchCondition));
-            //doubleSingleValueMatchCondition;
             // get the tag & value
             var tagName = FormatTagString(doubleSingleValueMatchCondition.QueryTag);
             var tagValue = doubleSingleValueMatchCondition.Value;
@@ -146,8 +164,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
             var tagName = FormatTagString(longSingleValueMatchCondition.QueryTag);
             var tagValue = longSingleValueMatchCondition.Value;
             var condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
-            //var condition = $"(c.value.{tagName}.Value[0] = {tagValue})";
-
 
             AddToQuery(condition);
         }

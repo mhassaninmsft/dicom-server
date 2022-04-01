@@ -34,6 +34,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             //    .WithParameter("@city", "Seattle");
 
             query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
+            Console.WriteLine($"the query is : {query}");
             var res1 = Container.GetItemQueryIterator<DataField>(query);
             var list = new List<DataField>();
             while (res1.HasMoreResults)
