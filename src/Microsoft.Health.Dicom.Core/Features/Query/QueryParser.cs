@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EnsureThat;
 using FellowOakDicom;
-//using Microsoft.Health.Dicom.Core.Extensions;
+using Microsoft.Health.Dicom.Core.Extensions;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
@@ -157,23 +157,21 @@ namespace Microsoft.Health.Dicom.Core.Features.Query
 
         private static QueryTag GetMatchingQueryTag(DicomTag dicomTag, string attributeId, IEnumerable<QueryTag> queryTags)
         {
-            //QueryTag queryTag = queryTags.FirstOrDefault(item =>
-            //{
-            //    // private tag from request doesn't have private creator, should do path comparison.
-            //    if (dicomTag.IsPrivate)
-            //    {
-            //        return item.Tag.GetPath() == dicomTag.GetPath();
-            //    }
+            QueryTag queryTag = queryTags.FirstOrDefault(item =>
+            {
+                // private tag from request doesn't have private creator, should do path comparison.
+                if (dicomTag.IsPrivate)
+                {
+                    return item.Tag.GetPath() == dicomTag.GetPath();
+                }
 
-            //    return item.Tag == dicomTag;
-            //});
-            Console.WriteLine(attributeId);
-            Console.WriteLine(queryTags);
-            QueryTag queryTag = new QueryTag(dicomTag);
-            //if (queryTag == null)
-            //{
-            //    throw new QueryParseException(string.Format(DicomCoreResource.UnsupportedSearchParameter, attributeId));
-            //}
+                return item.Tag == dicomTag;
+            });
+
+            if (queryTag == null)
+            {
+                throw new QueryParseException(string.Format(DicomCoreResource.UnsupportedSearchParameter, attributeId));
+            }
 
             return queryTag;
         }
