@@ -293,4 +293,3 @@ tempkey.rsa
 
 # custom secrets file for ASP.NET
 secrets.json
-appsettings.Development.json
