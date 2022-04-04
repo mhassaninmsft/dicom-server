@@ -37,11 +37,9 @@ namespace Microsoft.Health.Dicom.Web
             // need to ensure that the schema is initialized before the background workers are started.
             services.AddDicomServer(Configuration)
                 .AddBlobDataStores(Configuration)
-                .AddSqlServer(Configuration)
                 .AddCosmosDB(Configuration)
                 .AddAzureFunctionsClient(Configuration)
-                .AddBackgroundWorkers()
-                .AddHostedServices();
+                .AddBackgroundWorkers();
 
             AddApplicationInsightsTelemetry(services);
 
