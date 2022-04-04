@@ -43,7 +43,6 @@ namespace Microsoft.Health.Dicom.Web
                 .AddBackgroundWorkers()
                 .AddHostedServices();
 
-            //services.AddScoped<IDeleteService, CosmosDeleteService>();
             AddApplicationInsightsTelemetry(services);
 
 
