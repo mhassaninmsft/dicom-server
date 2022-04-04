@@ -11,6 +11,7 @@
 
 //using FellowOakDicom;
 
+using Microsoft.Azure.Cosmos;
 using Microsoft.Health.Dicom.Core.Features.Model;
 using Microsoft.Health.Dicom.Core.Features.Query;
 
@@ -21,29 +22,48 @@ namespace Microsoft.Health.Dicom.CosmosDb
         private async Task<IEnumerable<DataField>> GetItems(IReadOnlyCollection<QueryFilterCondition> filterConditions)
         {
             CosmosDbQueryGenerator cosmosDbQueryGenerator = new CosmosDbQueryGenerator();
+            var maxItemCount = 100;
             var query = "";
             foreach (var condition in filterConditions)
             {
-                Console.WriteLine($" THE CONDITIONS ARE THIS: {condition.ToString}");
                 condition.Accept(cosmosDbQueryGenerator);
             }
-            // Take the conditions and populate into the SQL query
-            // **** TODO **** This should ultimately be written differently to potentially avoid sql injection vulnerabilities
-            //INSPO? QueryDefinition query = new QueryDefinition("SELECT * FROM Families f WHERE f.id = @id AND f.Address.City = @city")
-            //    .WithParameter("@id", "AndersonFamily")
-            //    .WithParameter("@city", "Seattle");
 
+            // FUTURE TODO: continuation tokens ? will need a POST for a long token
             query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
             Console.WriteLine($"the query is : {query}");
-            var res1 = Container.GetItemQueryIterator<DataField>(query);
-            var list = new List<DataField>();
-            while (res1.HasMoreResults)
+            // FUTURE TODO: get from URL parameter
+            string continuation = "";
+            var queryOptions = new QueryRequestOptions()
             {
-                foreach (var item in await res1.ReadNextAsync())
+                MaxItemCount = maxItemCount,
+            };
+            // TODO: if continuation token not null/empty, then add it to teh query iterator
+            var res1 = Container.GetItemQueryIterator<DataField>(query, requestOptions: queryOptions);
+            var list = new List<DataField>();
+
+            using (res1)
+            {
+                while (res1.HasMoreResults)
                 {
-                    list.Add(item);
+                    FeedResponse<DataField> response = await res1.ReadNextAsync();
+                    if (response.Count > 0)
+                    {
+                        foreach (var item in response.Resource)
+                        {
+                            list.Add(item);
+                        }
+                        continuation = response.ContinuationToken;
+                        break;
+                    }
                 }
             }
+            if (!String.IsNullOrEmpty(continuation))
+            {
+                //FUTURE TODO: return token with list for pagination?
+                Console.WriteLine($"Continuation Token:  {continuation}");
+            }
+
             return list;
         }
 

@@ -77,7 +77,10 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(DateSingleValueMatchCondition dateSingleValueMatchCondition)
         {
+            // Ensure the condition is not null
             EnsureArg.IsNotNull(dateSingleValueMatchCondition, nameof(dateSingleValueMatchCondition));
+
+            // get the tag and convert the value to match the date format on the dicom storage
             var tagName = FormatTagString(dateSingleValueMatchCondition.QueryTag);
             string tagValue = dateSingleValueMatchCondition.Value.ToString("yyyyMMdd");
             string condition = $"(c['value']['{tagName}']['Value'][0] = '{tagValue}')";
@@ -87,10 +90,12 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(PersonNameFuzzyMatchCondition fuzzyMatchCondition)
         {
+            // Ensure the condition is not null
             EnsureArg.IsNotNull(fuzzyMatchCondition, nameof(fuzzyMatchCondition));
             var tagName = FormatTagString(fuzzyMatchCondition.QueryTag);
             var tagValue = fuzzyMatchCondition.Value.ToString();
 
+            // Break up the string into tokens of names, and do regex matching on each part
             var nameWords = tagValue.Split(' ');
             var nameWordsLength = nameWords.Length;
             for (var i = 0; i < nameWordsLength; i++)
@@ -104,14 +109,13 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(DoubleSingleValueMatchCondition doubleSingleValueMatchCondition)
         {
-            //Ensure the condition is not null
+            // Ensure the condition is not null
             EnsureArg.IsNotNull(doubleSingleValueMatchCondition, nameof(doubleSingleValueMatchCondition));
             // get the tag & value
             var tagName = FormatTagString(doubleSingleValueMatchCondition.QueryTag);
             var tagValue = doubleSingleValueMatchCondition.Value;
             var condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
 
-            // add to query
             AddToQuery(condition);
         }
 
@@ -122,14 +126,14 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(LongSingleValueMatchCondition longSingleValueMatchCondition)
         {
+            // Ensure the condition is not null
             EnsureArg.IsNotNull(longSingleValueMatchCondition, nameof(longSingleValueMatchCondition));
+            // Get the tag and the value
             var tagName = FormatTagString(longSingleValueMatchCondition.QueryTag);
             var tagValue = longSingleValueMatchCondition.Value;
             var condition = $"(c['value']['{tagName}']['Value'][0] = {tagValue})";
 
             AddToQuery(condition);
         }
-
-        // *** TODO *** Age string
     }
 }
