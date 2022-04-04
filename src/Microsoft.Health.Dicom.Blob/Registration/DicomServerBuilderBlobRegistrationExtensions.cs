@@ -13,8 +13,6 @@ using Microsoft.Health.Dicom.Blob.Utilities;
 using Microsoft.Health.Dicom.Core.Features.Common;
 using Microsoft.Health.Dicom.Core.Features.Workitem;
 using Microsoft.Health.Dicom.Core.Registration;
-//using Microsoft.Health.Dicom.CosmosDb;
-//using Microsoft.Health.Dicom.CosmosDb.Config;
 using Microsoft.Health.Extensions.DependencyInjection;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -31,12 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             EnsureArg.IsNotNull(serverBuilder, nameof(serverBuilder));
             EnsureArg.IsNotNull(configuration, nameof(configuration));
-
-            //  serverBuilder.Services.AddOptions<CosmosDbConfig>()
-            //.Bind(configuration.GetSection("CosmosDataStore"), binderOptions =>
-            //{
-            //    binderOptions.ErrorOnUnknownConfiguration = true;
-            //});
 
             var blobConfig = configuration.GetSection(BlobServiceClientOptions.DefaultSectionName);
             serverBuilder.Services

@@ -126,7 +126,11 @@ namespace Microsoft.Health.Dicom.Core.Modules
             services.AddTransient<IQueryParser<QueryExpression, QueryParameters>, QueryParser>();
             services.AddTransient<IQueryParser<BaseQueryExpression, BaseQueryParameters>, WorkitemQueryParser>();
 
-            services.Add<DeleteService>()
+            //services.Add<DeleteService>()
+            //    .Scoped()
+            //    .AsSelf()
+            //    .AsImplementedInterfaces();
+            services.Add<CosmosDeleteService>()
                 .Scoped()
                 .AsSelf()
                 .AsImplementedInterfaces();

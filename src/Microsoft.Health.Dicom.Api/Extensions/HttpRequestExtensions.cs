@@ -19,16 +19,7 @@ namespace Microsoft.Health.Dicom.Api.Extensions
         public static IEnumerable<AcceptHeader> GetAcceptHeaders(this HttpRequest httpRequest)
         {
             EnsureArg.IsNotNull(httpRequest, nameof(httpRequest));
-            var headers = httpRequest.GetTypedHeaders();
-            var rte = headers.Accept;
-            //IList<MediaTypeHeaderValue> acceptHeaders = headers.Accept;
-            //IList<MediaTypeHeaderValue> acceptHeaders = httpRequest.GetTypedHeaders().Accept;
-            var res1 = httpRequest.Headers.GetCommaSeparatedValues(HeaderNames.Accept);
-            //IList<MediaTypeHeaderValue> acceptHeaders = res1.Select(x => new MediaTypeHeaderValue(new StringSegment(x, 0, x.Length))).ToList();
-            IList<MediaTypeHeaderValue> acceptHeaders = headers.Accept;
-            //StringSegment seg1 = new StringSegment();
-            //MediaTypeHeaderValue val1 = new MediaTypeHeaderValue(seg1);
-            //Console.WriteLine($"")
+            IList<MediaTypeHeaderValue> acceptHeaders = httpRequest.GetTypedHeaders().Accept;
             if (acceptHeaders != null && acceptHeaders.Count != 0)
             {
                 return acceptHeaders.Select((item) => item.ToAcceptHeader())

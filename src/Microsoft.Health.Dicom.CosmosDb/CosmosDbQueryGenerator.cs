@@ -135,5 +135,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             AddToQuery(condition);
         }
+
     }
 }

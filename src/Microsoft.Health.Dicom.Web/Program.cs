@@ -8,6 +8,7 @@ using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Health.Development.IdentityProvider.Registration;
 
 namespace Microsoft.Health.Dicom.Web
@@ -20,11 +21,14 @@ namespace Microsoft.Health.Dicom.Web
                 .ConfigureAppConfiguration((hostContext, builder) => builder.AddDevelopmentAuthEnvironmentIfConfigured(builder.Build(), "DicomServer"))
                 .ConfigureAppConfiguration((hostContext, builder) =>
                 {
-                    if (File.Exists(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, "secrets.json")))
+                    if (hostContext.HostingEnvironment.IsDevelopment())
                     {
-                        Console.WriteLine("Found secrets");
-                        builder.SetBasePath(hostContext.HostingEnvironment.ContentRootPath)
-                        .AddJsonFile("secrets.json");
+                        if (File.Exists(Path.Combine(hostContext.HostingEnvironment.ContentRootPath, "secrets.json")))
+                        {
+                            Console.WriteLine("Found secrets");
+                            builder.SetBasePath(hostContext.HostingEnvironment.ContentRootPath)
+                            .AddJsonFile("secrets.json");
+                        }
                     }
                 })
                 .ConfigureKestrel(option =>

@@ -69,7 +69,8 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             foreach (var kv in filterConditions)
             {
-                _logger.LogInformation("kv is {Kv}", kv);
+                //vs.Visit(conditoin);
+                conditoin.Accept(vs);
             }
             var res1 = await GetItems(query.FilterConditions);
             var qresult = new QueryResult(new List<VersionedInstanceIdentifier>());
