@@ -40,37 +40,45 @@ namespace Microsoft.Health.Dicom.Core.Features.Delete
         {
             //TODO: How to get the version
             // Partition Key?
-            VersionedInstanceIdentifier versionedInstanceIdentifier = null;
-
-            IEnumerable<VersionedInstanceIdentifier> instancesToRetrieve = Enumerable.Empty<VersionedInstanceIdentifier>();
+            ICollection<VersionedInstanceIdentifier> instancesToRetrieve = Enumerable.Empty<VersionedInstanceIdentifier>().ToList();
 
             if (!string.IsNullOrEmpty(studyInstanceUid) && !string.IsNullOrEmpty(seriesInstanceUid) && !string.IsNullOrEmpty(sopInstanceUid))
             {
-                versionedInstanceIdentifier = new VersionedInstanceIdentifier(studyInstanceUid, seriesInstanceUid, sopInstanceUid, 42L);
+                var versionedInstanceIdentifier = new VersionedInstanceIdentifier(studyInstanceUid, seriesInstanceUid, sopInstanceUid, 42L);
+                instancesToRetrieve.Add(versionedInstanceIdentifier);
             }
 
             else if (string.IsNullOrEmpty(seriesInstanceUid) && string.IsNullOrEmpty(sopInstanceUid))
             {
-                instancesToRetrieve = await _instanceStore.GetInstanceIdentifiersInStudyAsync(
+                var collection = await _instanceStore.GetInstanceIdentifiersInStudyAsync(
                         0,
                         studyInstanceUid,
                         cancellationToken);
-
-                versionedInstanceIdentifier = instancesToRetrieve.First();
+                instancesToRetrieve = collection.ToList();
             }
             else if (string.IsNullOrEmpty(sopInstanceUid))
             {
-                instancesToRetrieve = await _instanceStore.GetInstanceIdentifiersInSeriesAsync(
+                var collection = await _instanceStore.GetInstanceIdentifiersInSeriesAsync(
                         0,
                         studyInstanceUid,
                         seriesInstanceUid,
                         cancellationToken);
-
-                versionedInstanceIdentifier = instancesToRetrieve.First();
+                instancesToRetrieve = collection.ToList();
             }
-            await _metadataStore.DeleteInstanceMetadataIfExistsAsync(versionedInstanceIdentifier, cancellationToken);
-            // How to delete the file with multiple versions
-            await _fileStore.DeleteFileIfExistsAsync(versionedInstanceIdentifier, cancellationToken);
+            foreach (var instanceIdentifier in instancesToRetrieve)
+            {
+                try
+                {
+                    await _metadataStore.DeleteInstanceMetadataIfExistsAsync(instanceIdentifier, cancellationToken);
+                    // How to delete the file with multiple versions
+                    await _fileStore.DeleteFileIfExistsAsync(instanceIdentifier, cancellationToken);
+                }
+                catch (Exception ex)
+                {
+                    // We do not stop deleting the instances ,but log the error
+                    _logger.LogError("Caught Exception {Excpetion}", ex.ToString());
+                }
+            }
 
         }
 
