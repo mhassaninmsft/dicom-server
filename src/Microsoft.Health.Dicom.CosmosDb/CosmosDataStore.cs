@@ -12,7 +12,6 @@ using System.Text.Json;
 using Microsoft.IO;
 using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
-//using Microsoft.Health.Dicom.Core.Models;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {

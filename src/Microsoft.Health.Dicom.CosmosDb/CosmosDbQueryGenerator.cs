@@ -3,12 +3,6 @@
 // Licensed under the MIT License (MIT). See LICENSE in the repo root for license information.
 // -------------------------------------------------------------------------------------------------
 
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-
 using EnsureThat;
 using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query;
@@ -22,11 +16,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         private void AddToQuery(string val)
         {
-            if (_query.Length == 0)
-            {
-
-            }
-            else
+            if (_query.Length > 0)
             {
                 _query += " AND ";
             }
@@ -121,6 +111,10 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
         public override void Visit(LongRangeValueMatchCondition longRangeValueMatchCondition)
         {
+            // NOTE: This is not currently implemented because of the current range syntax uses hyphens
+            //       IE if you wanted all values below 10, it would be `attribute=-10` but if you wanted
+            //       everything less than -10, it would be `attribute=--10` which currently breaks.
+            //       TODO: adjust the syntax for searching for number ranges.
             throw new NotImplementedException();
         }
 

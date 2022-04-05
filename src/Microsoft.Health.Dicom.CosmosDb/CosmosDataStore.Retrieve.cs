@@ -41,10 +41,11 @@ namespace Microsoft.Health.Dicom.CosmosDb
                     FeedResponse<DataField> response = await res1.ReadNextAsync();
                     if (response.Count > 0)
                     {
-                        foreach (var item in response.Resource)
-                        {
-                            list.Add(item);
-                        }
+                        //foreach (var item in response.Resource)
+                        //{
+                        //    list.Add(item);
+                        //}
+                        list.AddRange(response.Resource);
                         continuation = response.ContinuationToken;
                         break;
                     }
