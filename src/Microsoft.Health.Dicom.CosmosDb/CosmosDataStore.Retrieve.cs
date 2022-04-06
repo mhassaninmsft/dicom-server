@@ -22,7 +22,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             }
 
             // FUTURE TODO: continuation tokens ? will need a POST for a long token
-            query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
+            query = $"SELECT * FROM c WHERE ({cosmosDbQueryGenerator.OutputQuery()})";
             _logger.LogInformation($"the query is : {query}");
             // FUTURE TODO: get from URL parameter
             string continuation = "";
