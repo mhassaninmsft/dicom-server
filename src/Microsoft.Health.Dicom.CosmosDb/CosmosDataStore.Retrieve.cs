@@ -23,7 +23,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             // FUTURE TODO: continuation tokens ? will need a POST for a long token
             query = $"SELECT * FROM c WHERE {cosmosDbQueryGenerator.OutputQuery()}";
-            Console.WriteLine($"the query is : {query}");
+            _logger.LogInformation($"the query is : {query}");
             // FUTURE TODO: get from URL parameter
             string continuation = "";
             var queryOptions = new QueryRequestOptions()
@@ -50,7 +50,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             if (!String.IsNullOrEmpty(continuation))
             {
                 //FUTURE TODO: return token with list for pagination?
-                Console.WriteLine($"Continuation Token:  {continuation}");
+                _logger.LogInformation($"Continuation Token:  {continuation}");
             }
 
             return list;
