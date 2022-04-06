@@ -18,10 +18,8 @@
 
     <PackageReference Include="Microsoft.Health.Extensions.DependencyInjection" Version="$(HealthcareSharedPackageVersion)" />
   </ItemGroup>
-
   <ItemGroup>
-    <!--<ProjectReference Include="..\src\Microsoft.Health.Dicom.Blob\Microsoft.Health.Dicom.Blob.csproj" />-->
-    <ProjectReference Include="..\src\Microsoft.Health.Dicom.Core\Microsoft.Health.Dicom.Core.csproj" />
+    <ProjectReference Include="..\Microsoft.Health.Dicom.Core\Microsoft.Health.Dicom.Core.csproj" />
   </ItemGroup>
 
 </Project>

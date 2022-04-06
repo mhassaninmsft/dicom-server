@@ -12,7 +12,6 @@ using System.Text.Json;
 using Microsoft.IO;
 using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Query.Model;
-//using Microsoft.Health.Dicom.Core.Models;
 
 namespace Microsoft.Health.Dicom.CosmosDb
 {
@@ -66,16 +65,12 @@ namespace Microsoft.Health.Dicom.CosmosDb
             EnsureArg.IsNotNull(query, nameof(query));
             var queryResource = query.QueryResource;
             var filterConditions = query.FilterConditions;
-            QueryFilterConditionVisitor vs = new CosmosDbQueryGenerator();
-            foreach (var conditoin in filterConditions)
-            {
-                //vs.Visit(conditoin);
-                conditoin.Accept(vs);
-            }
-            //// Finally Get the query here
-            //vs.GetQuery();//TODO, Hannak To implement
 
-            var res1 = await GetItems();
+            foreach (var kv in filterConditions)
+            {
+                _logger.LogInformation("kv is {Kv}", kv);
+            }
+            var res1 = await GetItems(query.FilterConditions);
             var qresult = new QueryResult(new List<VersionedInstanceIdentifier>());
             //var list1 = res1.Select(s => s.Id).Where(s => s!.Length >= 30).ToList();
             var list2 = res1.Select(s => new VersionedInstanceIdentifier(s.StudyId, s.SeriesId, s.SopInstanceId, s.Version)).ToList() ?? new List<VersionedInstanceIdentifier>();
