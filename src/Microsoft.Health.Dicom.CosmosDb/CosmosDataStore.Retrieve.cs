@@ -16,14 +16,14 @@ namespace Microsoft.Health.Dicom.CosmosDb
         {
             CosmosDbQueryGenerator cosmosDbQueryGenerator = new CosmosDbQueryGenerator();
             var maxItemCount = 100;
-            var query = "";
+
             foreach (var condition in filterConditions)
             {
                 condition.Accept(cosmosDbQueryGenerator);
             }
 
             // FUTURE TODO: continuation tokens ? will need a POST for a long token
-            query = $"SELECT * FROM c WHERE ({cosmosDbQueryGenerator.OutputQuery()})";
+            var query = $"SELECT * FROM c WHERE ({cosmosDbQueryGenerator.OutputQuery()})";
             _logger.LogInformation("the query is : {Query}", query);
             // FUTURE TODO: get from URL parameter
             string continuation = "";
@@ -48,7 +48,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
                     }
                 }
             }
-            if (!String.IsNullOrEmpty(continuation))
+            if (!string.IsNullOrEmpty(continuation))
             {
                 //FUTURE TODO: return token with list for pagination?
                 _logger.LogInformation("Continuation Token:  {Continuation_Token}", continuation);
@@ -88,7 +88,6 @@ namespace Microsoft.Health.Dicom.CosmosDb
             var id = GetIdFromVersionedInstanceIdentifier(versionedInstanceIdentifier);
             var instanceToBeDeleted = new DataField() { Id = id };
             var result = await Container.DeleteItemAsync<DataField>(id, new Azure.Cosmos.PartitionKey(id));
-
         }
     }
 }

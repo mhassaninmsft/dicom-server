@@ -36,6 +36,8 @@ namespace Microsoft.Health.Dicom.Web
 
             // The execution of IHostedServices depends on the order they are added to the dependency injection container, so we
             // need to ensure that the schema is initialized before the background workers are started.
+            var useCosmos = bool.Parse(Configuration["DicomServer:Features:UseCosmosInsteadOfSql"]);
+            System.Console.WriteLine($"Use Cosmos {useCosmos}");
             services.AddDicomServer(Configuration)
                 .AddBlobDataStores(Configuration)
                 .AddSqlServer(Configuration)
