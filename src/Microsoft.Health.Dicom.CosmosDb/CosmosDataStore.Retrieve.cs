@@ -4,6 +4,7 @@
 // -------------------------------------------------------------------------------------------------
 
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 using Microsoft.Health.Dicom.Core.Features.Model;
 using Microsoft.Health.Dicom.Core.Features.Query;
 
@@ -23,7 +24,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
 
             // FUTURE TODO: continuation tokens ? will need a POST for a long token
             query = $"SELECT * FROM c WHERE ({cosmosDbQueryGenerator.OutputQuery()})";
-            _logger.LogInformation($"the query is : {query}");
+            _logger.LogInformation("the query is : {Query}", query);
             // FUTURE TODO: get from URL parameter
             string continuation = "";
             var queryOptions = new QueryRequestOptions()
@@ -50,7 +51,7 @@ namespace Microsoft.Health.Dicom.CosmosDb
             if (!String.IsNullOrEmpty(continuation))
             {
                 //FUTURE TODO: return token with list for pagination?
-                _logger.LogInformation($"Continuation Token:  {continuation}");
+                _logger.LogInformation("Continuation Token:  {Continuation_Token}", continuation);
             }
 
             return list;
