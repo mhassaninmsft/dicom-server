@@ -40,11 +40,9 @@ namespace Microsoft.Health.Dicom.Web
             System.Console.WriteLine($"Use Cosmos {useCosmos}");
             services.AddDicomServer(Configuration)
                 .AddBlobDataStores(Configuration)
-                .AddSqlServer(Configuration)
                 .AddCosmosDB(Configuration)
                 .AddAzureFunctionsClient(Configuration)
-                .AddBackgroundWorkers()
-                .AddHostedServices();
+                .AddBackgroundWorkers();
 
             AddApplicationInsightsTelemetry(services);
 
