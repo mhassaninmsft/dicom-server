@@ -13,6 +13,7 @@ using EnsureThat;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Health.Dicom.Core.Features.Common;
+using Microsoft.Health.Dicom.Core.Features.ExtendedQueryTag;
 using Microsoft.Health.Dicom.Core.Features.Query;
 using Microsoft.Health.Dicom.Core.Features.Retrieve;
 using Microsoft.Health.Dicom.Core.Features.Store;
@@ -36,6 +37,7 @@ namespace Microsoft.Health.Dicom.CosmosDb.Registration
             serverBuilder.Services.AddSingleton<IIndexDataStore, CosmosDataStore>();
             serverBuilder.Services.AddSingleton<IInstanceStore, CosmosDataStore>();
             serverBuilder.Services.AddSingleton<IQueryStore, CosmosDataStore>();
+            serverBuilder.Services.AddScoped<IExtendedQueryTagStore, CosmosDataStore>();
             return serverBuilder;
 
         }

@@ -38,14 +38,23 @@ namespace Microsoft.Health.Dicom.Web
             // need to ensure that the schema is initialized before the background workers are started.
             var useCosmos = bool.Parse(Configuration["DicomServer:Features:UseCosmosInsteadOfSql"]);
             System.Console.WriteLine($"Use Cosmos {useCosmos}");
-            services.AddDicomServer(Configuration)
+            if (useCosmos)
+            {
+                services.AddDicomServer(Configuration)
+                .AddBlobDataStores(Configuration)
+                .AddCosmosDB(Configuration)
+                .AddAzureFunctionsClient(Configuration)
+                .AddBackgroundWorkers();
+            }
+            else
+            {
+                services.AddDicomServer(Configuration)
                 .AddBlobDataStores(Configuration)
                 .AddSqlServer(Configuration)
-                .AddCosmosDB(Configuration)
                 .AddAzureFunctionsClient(Configuration)
                 .AddBackgroundWorkers()
                 .AddHostedServices();
-
+            }
             AddApplicationInsightsTelemetry(services);
 
 
